@@ -1,0 +1,17 @@
+#BlueJ class context
+comment0.target=Misionero
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Misionero\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=
+comment1.target=Misionero()
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Misionero\r\n
+comment2.params=
+comment2.target=void\ makeVisible()
+comment3.params=
+comment3.target=void\ makeInvisible()
+comment4.params=newSize
+comment4.target=void\ changeSize(int)
+comment5.params=newColor
+comment5.target=void\ changeColor(java.lang.String)
+comment6.params=f\ c
+comment6.target=void\ moveTo(int,\ int)
+numComments=7
