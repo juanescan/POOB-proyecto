@@ -13,42 +13,38 @@ public class spiderWeb
     private int y;
     private int centerX;
     private int centerY;
-    private int radians;
     private boolean isVisible;
     private lines line;
-    private int lon;
+    private int radiansBetween;
+    private int radius;
     
 
     /**
      * Constructor for objects of class spiderWeb
      */
-    public spiderWeb(int threads)
+    public spiderWeb(int threads,int radius)
     {
         this.threads = threads;
+        this.radius = radius;
         x = 50;
         y = 50;
         centerX = 150;
         centerY = 150;
-        radians = (int)((360/threads)*Math.PI/180);
-        isVisible = false;
-        lon = (int)(Math.sqrt((Math.pow((x-centerX),2)+Math.pow((y-centerY),2))));
-        
-        
+        isVisible = false;  
     }
     
     private void draw(){
         if(isVisible) {
+            double radiansBetween = 2*Math.PI/threads;
+            double currentAngle = 0;
             for(int i=0;i < threads;i++){
-                lines line = new lines(x,y,40,40);
+                x = (int)(centerX + radius * Math.cos(currentAngle));
+                y = (int)(centerY + radius * Math.sin(currentAngle));
+                lines line = new lines(centerX,centerY,x,y);
                 line.makeVisible();
-                x += 150;
-                y += 150;
+                currentAngle += radiansBetween;
             }
          }
-    }
-    
-    public int getLon(){
-        return lon;
     }
     
     public void makeVisible(){

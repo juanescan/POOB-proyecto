@@ -17,7 +17,7 @@ public class lines
     /**
      * Constructor for objects of class lines
      */
-    public lines(int x1,int y1,int y2,int x2){
+    public lines(int x1,int y1,int x2,int y2){
         this.x1 = x1;
         this.y1 = y1;
         this.y2 = y2;
