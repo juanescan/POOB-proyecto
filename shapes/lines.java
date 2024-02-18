@@ -38,4 +38,16 @@ public class lines
         isVisible = true;
         draw();
     }
+    
+    public void makeInvisible(){
+        erase();
+        isVisible = false;
+    }
+    
+    private void erase(){
+        if(isVisible) {
+            Canvas canvas = Canvas.getCanvas();
+            canvas.erase(this);
+        }
+    }
 }
