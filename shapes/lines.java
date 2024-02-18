@@ -88,4 +88,20 @@ public class lines
         y2 += distance;
         redraw();
     }
+    
+    public void center(int xCenter, int yCenter) {
+        int lineCenterX = (x1 + x2) / 2;
+        int lineCenterY = (y1 + y2) / 2;
+
+ 
+        int dx = xCenter - lineCenterX;
+        int dy = yCenter - lineCenterY;
+
+        x1 += dx;
+        x2 += dx;
+        y1 += dy;
+        y2 += dy;
+
+        redraw();
+    }
 }

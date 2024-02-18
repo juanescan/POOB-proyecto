@@ -79,6 +79,10 @@ public class spiderWeb
         }
     }
     
+    public Point getCenter() {
+        return new Point(centerX, centerY);
+    }
+    
     public int getXByIndex(int index) {
         Point punto = linesAndCoordenates.get(index);
         if (punto != null) {

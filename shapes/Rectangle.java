@@ -211,5 +211,36 @@ public class Rectangle{
         width = x;
         draw();
     }
+    
+    public void center(int x,int y){
+        erase();
+        xPosition = x;
+        yPosition = y;
+        draw();
+    }
+    
+    public void moveRight(int x){
+        erase();
+        xPosition += x;
+        draw();
+    }
+    
+    public void moveLeft(int x){
+        erase();
+        xPosition -= x;
+        draw();
+    }
+    
+    public void moveUp(int y){
+        erase();
+        yPosition -= y;
+        draw();
+    }
+    
+    public void moveDown(int y){
+        erase();
+        yPosition += y;
+        draw();
+    }
 }
 

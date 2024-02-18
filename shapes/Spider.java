@@ -24,25 +24,58 @@ public class Spider
      */
     public Spider()
     {
-        Head = new Circle(20,150,150,"red");
-        Body = new Rectangle(40,5,158,110,"black");
-        leg1 = new lines(150,140,110,130,"blue");
-        leg2 = new lines(150,140,110,130,"blue");
-        leg3 = new lines(150,130,110,140,"blue");
-        leg4 = new lines(150,130,110,140,"blue");
+        Head = new Circle(20,140,160,"red");
+        Body = new Rectangle(40,5,146,119,"black");
+        leg1 = new lines(145,150,105,140,"blue");
+        leg2 = new lines(145,130,107,110,"blue");
+        leg3 = new lines(189,140,152,150,"blue");
+        leg4 = new lines(192,120,152,130,"blue");
+        //public lines(int x1,int y1,int x2,int y2,String c)
     }
     
     public void makeVisible()
     {
         Head.makeVisible();
         Body.makeVisible();
-        leg1.moveRight(7);
-        leg2.moveRight(7);
-        leg2.up(20);
-        leg3.moveRight(54);
-        leg4.moveRight(54);
-        leg4.up(20);
+        leg1.makeVisible();
+        leg2.makeVisible();
+        leg3.makeVisible();
+        leg4.makeVisible();
     }
     
+    public void center(){
+        Head.center(140,160);
+        Body.center(146,119);
+        leg1.center(125,145);
+        leg2.center(126,120);
+        leg3.center(170,145);
+        leg4.center(173,126);
+    }
     
+    public void moveRight(int x){
+        Head.moveRight(x);
+        Body.moveRight(x);
+        leg1.moveRight(x);
+        leg2.moveRight(x);
+        leg3.moveRight(x);
+        leg4.moveRight(x);
+    }
+    
+    public void moveLeft(int x){
+        Head.moveLeft(x);
+        Body.moveLeft(x);
+        leg1.moveLeft(x);
+        leg2.moveLeft(x);
+        leg3.moveLeft(x);
+        leg4.moveLeft(x);
+    }
+    
+    public void moveUp(int y){
+        Head.moveUp(y);
+        Body.moveUp(y);
+        leg1.up(y);
+        leg2.up(y);
+        leg3.up(y);
+        leg4.up(y);
+    }
 }
