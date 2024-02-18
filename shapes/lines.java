@@ -26,6 +26,15 @@ public class lines
         color = "black";
     }
     
+    public lines(int x1,int y1,int x2,int y2,String c){
+        this.x1 = x1;
+        this.y1 = y1;
+        this.y2 = y2;
+        this.x2 = x2;
+        isVisible = false;
+        color = c;
+    }
+    
     private void draw(){
         Canvas canvas = Canvas.getCanvas();
         int[] xpoints = { x1, x2};
@@ -49,5 +58,34 @@ public class lines
             Canvas canvas = Canvas.getCanvas();
             canvas.erase(this);
         }
+    }
+    
+    public void moveRight(int distance){
+        x1 += distance;
+        x2 += distance;
+        redraw();
+    }
+    
+    private void redraw(){
+        erase();
+        draw();
+    }
+    
+    public void moveLeft(int distance){
+        x1 -= distance;
+        x2 -= distance;
+        redraw();
+    }
+    
+    public void up(int distance){
+        y1 -= distance;
+        y2 -= distance;
+        redraw();
+    }
+    
+    public void down(int distance){
+        y1 += distance;
+        y2 += distance;
+        redraw();
     }
 }
