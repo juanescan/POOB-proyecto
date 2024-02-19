@@ -33,6 +33,9 @@ public class Spider
         //public lines(int x1,int y1,int x2,int y2,String c)
     }
     
+    /**
+     * Make visible the spider
+     */
     public void makeVisible()
     {
         Head.makeVisible();
@@ -43,6 +46,9 @@ public class Spider
         leg4.makeVisible();
     }
     
+    /**
+     * move to the center 
+     */
     public void center(){
         Head.center(140,160);
         Body.center(146,119);
@@ -52,6 +58,9 @@ public class Spider
         leg4.center(173,126);
     }
     
+    /**
+     * Move the spider to the right 
+     */
     public void moveRight(int x){
         Head.moveRight(x);
         Body.moveRight(x);
@@ -61,6 +70,9 @@ public class Spider
         leg4.moveRight(x);
     }
     
+    /**
+     * Move the spider to the left
+     */
     public void moveLeft(int x){
         Head.moveLeft(x);
         Body.moveLeft(x);
@@ -70,6 +82,9 @@ public class Spider
         leg4.moveLeft(x);
     }
     
+    /**
+     * Move the spider up
+     */
     public void moveUp(int y){
         Head.moveUp(y);
         Body.moveUp(y);
@@ -79,6 +94,9 @@ public class Spider
         leg4.up(y);
     }
     
+    /**
+     * Move the spider down
+     */
     public void moveDown(int y){
         Head.moveDown(y);
         Body.moveDown(y);
@@ -88,6 +106,9 @@ public class Spider
         leg4.down(y);
     }
     
+    /**
+     * Move the spider in diagonal way
+     */
     public void moveSlowDiagonal(int x,int y){
         Head.moveDiagonally(x,y);
         Body.moveDiagonally(x,y);
@@ -97,6 +118,9 @@ public class Spider
         leg4.moveDiagonally(x,y);
     }
     
+    /**
+     * Move the spider to a specific coordenate
+     */
     public void moveTo(int x,int y){
         Head.moveTo(x,y);
         Body.moveTo(x,y);
@@ -107,12 +131,12 @@ public class Spider
     }
     
     public void moveAlongWeb(spiderWeb web, int webIndex) {
-    web.moveCircleAlongWeb(Head, webIndex);
-    web.moveRectangleAlongWeb(Body, webIndex);
-    web.movelinesAlongWeb(leg1, webIndex);
-    web.movelinesAlongWeb(leg2, webIndex);
-    web.movelinesAlongWeb(leg3, webIndex);
-    web.movelinesAlongWeb(leg4, webIndex);
+        web.moveCircleAlongWeb(Head, webIndex);
+        web.moveRectangleAlongWeb(Body, webIndex);
+        web.movelinesAlongWeb(leg1, webIndex);
+        web.movelinesAlongWeb(leg2, webIndex);
+        web.movelinesAlongWeb(leg3, webIndex);
+        web.movelinesAlongWeb(leg4, webIndex);
     }
         
 }

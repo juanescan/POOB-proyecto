@@ -46,7 +46,7 @@ public class Circle{
         isVisible = false;
     }
     
-    public void moveToCoordinates(int x, int y) {
+    public void moveToCoordenates(int x, int y) {
         erase();
         xPosition = x;
         yPosition = y;
@@ -281,6 +281,10 @@ public class Circle{
         erase();
         yPosition += y;
         draw();
+    }
+    
+    public String getColor(){
+        return color;
     }
 
 }

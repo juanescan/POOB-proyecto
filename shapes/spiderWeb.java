@@ -1,5 +1,6 @@
 import java.lang.Math;
 import java.util.*;
+import java.util.ArrayList;
 
 /**
  * Write a description of class spiderWeb here.
@@ -9,7 +10,6 @@ import java.util.*;
  */
 public class spiderWeb
 {
-    // instance variables - replace the example below with your own
     private int strands;
     private int x;
     private int y;
@@ -20,8 +20,9 @@ public class spiderWeb
     private int radius;
     private Map<Integer, Point> linesAndCoordenates;
     private int distance;
-    private int len;
-    
+    private Circle spot;
+    private ArrayList<Circle> spots = new ArrayList<>();
+
     /**
      * Constructor for objects of class spiderWeb
      */
@@ -35,8 +36,10 @@ public class spiderWeb
         centerY = 150;
         isVisible = false;
         linesAndCoordenates = new HashMap<>();
+        this.spots = new ArrayList<>();
     }
     
+    //draw the spiderweb
     private void draw(){
         double radiansBetween = 2*Math.PI/strands;
         double currentAngle = 0;
@@ -51,6 +54,9 @@ public class spiderWeb
         }
     }
     
+    /**
+     * Add Bridge with color, distances and a specific strand
+     */
     public void addBridge(String color, int distance, int firstStrand){
         if (distance <= 0 || distance > radius) {
         throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
@@ -67,11 +73,51 @@ public class spiderWeb
         }
     }
     
+    public void relocateBridge(String color, int distance){
+        
+    }
+    
+    public void delBridge(String color){
+        
+    }
+    
+    /**
+     * Add a spot with a specific color and specific strand
+     */
+    public void addSpot(String color,int strand){
+        int size = (int)(radius/4);
+        int xPos = findCoordenateX(radius,strand)-radius/8;
+        int yPos = findCoordenateY(radius,strand)- radius/8;
+        Circle spot = new Circle(size,xPos,yPos,color);
+        spot.makeVisible();
+        spots.add(spot);
+    }
+    
+    /**
+     * Delete spot of a selected color
+     */
+    public void delSpot(String color) {
+        for (int i = 0 ; i < spots.size() ; i++) {
+            Circle spot = spots.get(i);
+            if (spot.getColor().equals(color)) {
+                spot.makeInvisible(); 
+                spots.remove(i); 
+                }
+            }
+    }
+
+    
+    /**
+     * Make visible the spiderweb
+     */
     public void makeVisible(){
         isVisible = true;
         draw();
     }
     
+    /**
+     * Static class point, save the coordenate x,y and current angle of a line
+     */
     public static class Point {
         private int x;
         private int y;
@@ -96,10 +142,13 @@ public class spiderWeb
         }
     }
     
+    /**
+     * Static class point, save the coordenate x,y and current angle of a line
+     */
     public static class Bridge {
         private String color;
         private int distance;
-    
+
         public Bridge(String color, int distance) {
             this.color = color;
             this.distance = distance;
@@ -112,13 +161,12 @@ public class spiderWeb
         public int getDistance() {
             return distance;
         }
-        
-        public void setDistance(int distance) {
-            this.distance = distance;
-        }
     }
     
-    public int getXByIndex(int index) {
+    /**
+     * Get coordenate x in the hashmap
+     */
+    private int getXByIndex(int index) {
         Point punto = linesAndCoordenates.get(index);
         if (punto != null) {
             return punto.getX();
@@ -127,7 +175,10 @@ public class spiderWeb
         }
     }
     
-    public int getYByIndex(int index){
+    /**
+     * Get coordenate y in the hashmap
+     */
+    private int getYByIndex(int index){
         Point punto = linesAndCoordenates.get(index);
         if (punto != null){
             return punto.getY();
@@ -136,7 +187,10 @@ public class spiderWeb
         }
     }
     
-    public double getAngleByIndex(int index){
+    /**
+     * Get angle in the hashmap
+     */
+    private double getAngleByIndex(int index){
         Point punto = linesAndCoordenates.get(index);
         if(punto != null){
             return punto.getCurrentAngle();
@@ -145,53 +199,58 @@ public class spiderWeb
         }
     }
     
-    public int findCoordenateX(int distance,int firstStrand){ 
+    /**
+     * Find the new coordenate x
+     */
+    private int findCoordenateX(int distance,int firstStrand){ 
         int x2 = (int)(centerX + distance * Math.cos(getAngleByIndex(firstStrand)));
         return x2;
     }
     
-    public int findCoordenateY(int distance,int firstStrand){ 
+    /**
+     * Find the new coordenate x
+     */
+    private int findCoordenateY(int distance,int firstStrand){ 
         int y2 = (int)(centerY + distance * Math.sin(getAngleByIndex(firstStrand)));
         return y2;
     }
-    
-        public Map<Integer, Point> getLinesAndCoordinates() {
+      
+    /**
+     * Return the HashMap linesAndCoordenates
+     */
+    private Map<Integer, Point> getLinesAndCoordenates() {
         return linesAndCoordenates;
     }
 
-    public void moveCircleAlongWeb(Circle circle, int webIndex) {
-    Map<Integer, Point> coordinates = getLinesAndCoordinates();
-    if (webIndex >= 1 && webIndex <= coordinates.size()) {
-        Point point = coordinates.get(webIndex);
-        circle.moveToCoordinates(point.getX(), point.getY());
-    } else {
-        System.out.println("Índice de telaraña fuera de rango.");
-    }
+    private void moveCircleAlongWeb(Circle circle, int webIndex) {
+        Map<Integer, Point> coordenates = getLinesAndCoordenates();
+        if (webIndex >= 1 && webIndex <= coordenates.size()) {
+            Point point = coordenates.get(webIndex);
+            circle.moveToCoordenates(point.getX(), point.getY());
+        } else {
+            System.out.println("Índice de telaraña fuera de rango.");
+        }
     }
     
-    public void moveRectangleAlongWeb(Rectangle rectangle, int webIndex) {
-    Map<Integer, Point> coordinates = getLinesAndCoordinates();
-    if (webIndex >= 1 && webIndex <= coordinates.size()) {
-        Point point = coordinates.get(webIndex);
-        rectangle.moveToCoordinates(point.getX(), point.getY());
-    } else {
-        System.out.println("Índice de telaraña fuera de rango.");
-    }
+    private void moveRectangleAlongWeb(Rectangle rectangle, int webIndex) {
+        Map<Integer, Point> coordinates = getLinesAndCoordenates();
+        if (webIndex >= 1 && webIndex <= coordinates.size()) {
+            Point point = coordinates.get(webIndex);
+            rectangle.moveToCoordinates(point.getX(), point.getY());
+        } else {
+            System.out.println("Índice de telaraña fuera de rango.");
+        }
     }
     
     //chatgpt
-    public void movelinesAlongWeb(lines line, int webIndex) {
-    Map<Integer, Point> coordinates = getLinesAndCoordinates();
-    if (webIndex >= 1 && webIndex <= coordinates.size()) {
-        Point point = coordinates.get(webIndex);
-        line.center(point.getX(), point.getY());
-    } else {
-        System.out.println("Índice de telaraña fuera de rango.");
-    }
+    private void movelinesAlongWeb(lines line, int webIndex) {
+        Map<Integer, Point> coordinates = getLinesAndCoordenates();
+        if (webIndex >= 1 && webIndex <= coordinates.size()) {
+            Point point = coordinates.get(webIndex);
+            line.center(point.getX(), point.getY());
+        } else {
+            System.out.println("Índice de telaraña fuera de rango.");
+        }
     } 
-    
-    
-    
-
 }
 
