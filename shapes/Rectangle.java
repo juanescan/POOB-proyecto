@@ -42,10 +42,17 @@ public class Rectangle{
         
     }
 
-    public void Cordenadas(int x,int y){
+    public void moveTo(int x,int y){
         erase();
         xPosition += x;
         yPosition += y;
+        draw();
+    }
+    
+    public void moveToCoordinates(int x, int y) {
+        erase();
+        xPosition = x;
+        yPosition = y;
         draw();
     }
     
@@ -210,6 +217,19 @@ public class Rectangle{
         height = y;
         width = x;
         draw();
+    }
+    
+    public void moveDiagonally(int x,int y){
+        for(int i = 0; i < Math.max(x,y) ; i++){
+            if (i < x){
+                slowMoveHorizontal(1);
+            }
+            if (i < y){
+                slowMoveVertical(1);
+            }
+            
+        }
+        
     }
     
     public void center(int x,int y){

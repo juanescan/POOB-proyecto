@@ -53,6 +53,15 @@ public class lines
         isVisible = false;
     }
     
+    public void moveTo(int x,int y){
+        erase();
+        x1 += x;
+        x2 += x;
+        y1 += y;
+        y2 += y;
+        draw();
+    }
+    
     private void erase(){
         if(isVisible) {
             Canvas canvas = Canvas.getCanvas();
@@ -104,4 +113,53 @@ public class lines
 
         redraw();
     }
+   
+    public void moveDiagonally(int x,int y){
+        for(int i = 0; i < Math.max(x,y) ; i++){
+            if (i < x){
+                slowMoveHorizontal(1);
+            }
+            if (i < y){
+                slowMoveVertical(1);
+            }
+            
+        }
+        
+    }
+    
+    public void slowMoveVertical(int distance){
+        int delta;
+
+        if(distance < 0) {
+            delta = -1;
+            distance = -distance;
+        } else {
+            delta = 1;
+        }
+
+        for(int i = 0; i < distance; i++){
+            y1+= delta;
+            y2 += delta;
+            draw();
+        }
+    }
+    
+    public void slowMoveHorizontal(int distance){
+        int delta;
+
+        if(distance < 0) {
+            delta = -1;
+            distance = -distance;
+        } else {
+            delta = 1;
+        }
+
+        for(int i = 0; i < distance; i++){
+            x1 += delta;
+            x2 += delta;
+            draw();
+        }
+    }
+    
+    
 }

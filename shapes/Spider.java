@@ -78,4 +78,41 @@ public class Spider
         leg3.up(y);
         leg4.up(y);
     }
+    
+    public void moveDown(int y){
+        Head.moveDown(y);
+        Body.moveDown(y);
+        leg1.down(y);
+        leg2.down(y);
+        leg3.down(y);
+        leg4.down(y);
+    }
+    
+    public void moveSlowDiagonal(int x,int y){
+        Head.moveDiagonally(x,y);
+        Body.moveDiagonally(x,y);
+        leg1.moveDiagonally(x,y);
+        leg2.moveDiagonally(x,y);
+        leg3.moveDiagonally(x,y);
+        leg4.moveDiagonally(x,y);
+    }
+    
+    public void moveTo(int x,int y){
+        Head.moveTo(x,y);
+        Body.moveTo(x,y);
+        leg1.moveTo(x,y);
+        leg2.moveTo(x,y);
+        leg3.moveTo(x,y);
+        leg4.moveTo(x,y);
+    }
+    
+    public void moveAlongWeb(spiderWeb web, int webIndex) {
+    web.moveCircleAlongWeb(Head, webIndex);
+    web.moveRectangleAlongWeb(Body, webIndex);
+    web.movelinesAlongWeb(leg1, webIndex);
+    web.movelinesAlongWeb(leg2, webIndex);
+    web.movelinesAlongWeb(leg3, webIndex);
+    web.movelinesAlongWeb(leg4, webIndex);
+    }
+        
 }

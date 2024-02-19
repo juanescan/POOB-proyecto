@@ -46,7 +46,14 @@ public class Circle{
         isVisible = false;
     }
     
-    public void Cordenadas(int x,int y){
+    public void moveToCoordinates(int x, int y) {
+        erase();
+        xPosition = x;
+        yPosition = y;
+        draw();
+    }
+    
+    public void moveTo(int x,int y){
         erase();
         xPosition += x;
         yPosition += y;
