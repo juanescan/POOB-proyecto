@@ -122,12 +122,12 @@ public class Spider
      * Move the spider to a specific coordenate
      */
     public void moveTo(int x,int y){
-        Head.moveTo(x,y);
-        Body.moveTo(x,y);
-        leg1.moveTo(x,y);
-        leg2.moveTo(x,y);
-        leg3.moveTo(x,y);
-        leg4.moveTo(x,y);
+        Head.moveToCoordenates(x,y);
+        Body.moveToCoordinates(x,y);
+        leg1.center(x,y);
+        leg2.center(x,y);
+        leg3.center(x,y);
+        leg4.center(x,y);
     }
         
 }

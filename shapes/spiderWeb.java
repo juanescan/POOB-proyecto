@@ -94,9 +94,11 @@ public class spiderWeb
     }
     //revisar
     public void spiderSitOnStrand(int strand) {
-        int xStrand = getXByIndex(strand);
-        int yStrand = getYByIndex(strand);
+        int size = (int)(radius/4);
+        int xStrand = findCoordenateX(radius,strand)-radius/8;
+        int yStrand = findCoordenateY(radius,strand)-radius/8;
         Spider x = new Spider();
+        x.makeVisible();
         x.moveTo(xStrand, yStrand);
     }
     
