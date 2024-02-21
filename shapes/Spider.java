@@ -129,14 +129,5 @@ public class Spider
         leg3.moveTo(x,y);
         leg4.moveTo(x,y);
     }
-    
-    public void moveAlongWeb(spiderWeb web, int webIndex) {
-        web.moveCircleAlongWeb(Head, webIndex);
-        web.moveRectangleAlongWeb(Body, webIndex);
-        web.movelinesAlongWeb(leg1, webIndex);
-        web.movelinesAlongWeb(leg2, webIndex);
-        web.movelinesAlongWeb(leg3, webIndex);
-        web.movelinesAlongWeb(leg4, webIndex);
-    }
         
 }

@@ -92,6 +92,13 @@ public class spiderWeb
         spot.makeVisible();
         spots.add(spot);
     }
+    //revisar
+    public void spiderSitOnStrand(int strand) {
+        int xStrand = getXByIndex(strand);
+        int yStrand = getYByIndex(strand);
+        Spider x = new Spider();
+        x.moveTo(xStrand, yStrand);
+    }
     
     /**
      * Delete spot of a selected color
@@ -222,35 +229,6 @@ public class spiderWeb
         return linesAndCoordenates;
     }
 
-    private void moveCircleAlongWeb(Circle circle, int webIndex) {
-        Map<Integer, Point> coordenates = getLinesAndCoordenates();
-        if (webIndex >= 1 && webIndex <= coordenates.size()) {
-            Point point = coordenates.get(webIndex);
-            circle.moveToCoordenates(point.getX(), point.getY());
-        } else {
-            System.out.println("Índice de telaraña fuera de rango.");
-        }
-    }
     
-    private void moveRectangleAlongWeb(Rectangle rectangle, int webIndex) {
-        Map<Integer, Point> coordinates = getLinesAndCoordenates();
-        if (webIndex >= 1 && webIndex <= coordinates.size()) {
-            Point point = coordinates.get(webIndex);
-            rectangle.moveToCoordinates(point.getX(), point.getY());
-        } else {
-            System.out.println("Índice de telaraña fuera de rango.");
-        }
-    }
-    
-    //chatgpt
-    private void movelinesAlongWeb(lines line, int webIndex) {
-        Map<Integer, Point> coordinates = getLinesAndCoordenates();
-        if (webIndex >= 1 && webIndex <= coordinates.size()) {
-            Point point = coordinates.get(webIndex);
-            line.center(point.getX(), point.getY());
-        } else {
-            System.out.println("Índice de telaraña fuera de rango.");
-        }
-    } 
 }
 
