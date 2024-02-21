@@ -286,5 +286,16 @@ public class Circle{
     public String getColor(){
         return color;
     }
+    
+    public int getXPosition(){
+        return xPosition;
+    }
+    
+    public int getYPosition(){
+        return yPosition;
+    }
 
+    public int getDiameter(){
+        return diameter;
+    }
 }

@@ -11,10 +11,12 @@ public class Spider
     // instance variables - replace the example below with your own
     private Circle Head;
     private Rectangle Body;
-    private lines leg1;
-    private lines leg2;
-    private lines leg3;
-    private lines leg4;
+    private Rectangle leg1;
+    private Rectangle leg2;
+    private Rectangle leg3;
+    private Rectangle leg4;
+    private Rectangle leg5;
+    private Rectangle leg6;
     private String color;
     private boolean isVisible;
     
@@ -22,15 +24,16 @@ public class Spider
     /**
      * Constructor for objects of class Spider
      */
-    public Spider()
+    public Spider(int size, int xStrand, int yStrand)
     {
-        Head = new Circle(20,140,160,"red");
-        Body = new Rectangle(40,5,146,119,"black");
-        leg1 = new lines(145,150,105,140,"blue");
-        leg2 = new lines(145,130,107,110,"blue");
-        leg3 = new lines(189,140,152,150,"blue");
-        leg4 = new lines(192,120,152,130,"blue");
-        //public lines(int x1,int y1,int x2,int y2,String c)
+        Head = new Circle(size/6,xStrand,yStrand,"red");
+        Body = new Rectangle(size/3,size/7,Head.getXPosition(),Head.getYPosition(),"black");
+        leg1 = new Rectangle(size/14,size/6,Body.getXPosition(),Body.getYPosition(),"blue");
+        leg2 = new Rectangle(size/14,size/6,Body.getXPosition(),Body.getYPosition(),"blue");
+        leg3 = new Rectangle(size/14,size/6,Body.getXPosition(),Body.getYPosition(),"blue");
+        leg4 = new Rectangle(size/14,size/6,Body.getXPosition(),Body.getYPosition(),"blue");
+        leg5 = new Rectangle(size/14,size/6,Body.getXPosition(),Body.getYPosition(),"blue");
+        leg6 = new Rectangle(size/14,size/6,Body.getXPosition(),Body.getYPosition(),"blue");
     }
     
     /**
@@ -44,30 +47,17 @@ public class Spider
         leg2.makeVisible();
         leg3.makeVisible();
         leg4.makeVisible();
+        leg5.makeVisible();
+        leg6.makeVisible();
+        organize();
     }
-    
-    /**
-     * move to the center 
-     */
-    public void center(){
-        Head.center(140,160);
-        Body.center(146,119);
-        leg1.center(125,145);
-        leg2.center(126,120);
-        leg3.center(170,145);
-        leg4.center(173,126);
-    }
-    
+      
     /**
      * Move the spider to the right 
      */
     public void moveRight(int x){
         Head.moveRight(x);
         Body.moveRight(x);
-        leg1.moveRight(x);
-        leg2.moveRight(x);
-        leg3.moveRight(x);
-        leg4.moveRight(x);
     }
     
     /**
@@ -76,10 +66,6 @@ public class Spider
     public void moveLeft(int x){
         Head.moveLeft(x);
         Body.moveLeft(x);
-        leg1.moveLeft(x);
-        leg2.moveLeft(x);
-        leg3.moveLeft(x);
-        leg4.moveLeft(x);
     }
     
     /**
@@ -88,10 +74,6 @@ public class Spider
     public void moveUp(int y){
         Head.moveUp(y);
         Body.moveUp(y);
-        leg1.up(y);
-        leg2.up(y);
-        leg3.up(y);
-        leg4.up(y);
     }
     
     /**
@@ -100,10 +82,6 @@ public class Spider
     public void moveDown(int y){
         Head.moveDown(y);
         Body.moveDown(y);
-        leg1.down(y);
-        leg2.down(y);
-        leg3.down(y);
-        leg4.down(y);
     }
     
     /**
@@ -112,10 +90,6 @@ public class Spider
     public void moveSlowDiagonal(int x,int y){
         Head.moveDiagonally(x,y);
         Body.moveDiagonally(x,y);
-        leg1.moveDiagonally(x,y);
-        leg2.moveDiagonally(x,y);
-        leg3.moveDiagonally(x,y);
-        leg4.moveDiagonally(x,y);
     }
     
     /**
@@ -124,10 +98,16 @@ public class Spider
     public void moveTo(int x,int y){
         Head.moveToCoordenates(x,y);
         Body.moveToCoordinates(x,y);
-        leg1.center(x,y);
-        leg2.center(x,y);
-        leg3.center(x,y);
-        leg4.center(x,y);
+    }
+    
+    private void organize(){
+        Body.Coordenadas(Head.getXPosition(),Head.getYPosition() + Head.getDiameter());
+        leg1.Coordenadas(Body.getXPosition()-Body.getWidth(),Body.getYPosition());
+        leg2.Coordenadas(Body.getXPosition()+Body.getWidth(),Body.getYPosition());
+        leg3.Coordenadas(Body.getXPosition()-Body.getWidth(),Body.getYPosition() + Body.getHeight() -leg1.getHeight());
+        leg4.Coordenadas(Body.getXPosition()+Body.getWidth(),Body.getYPosition() + Body.getHeight() -leg1.getHeight());
+        leg5.Coordenadas(Body.getXPosition()-Body.getWidth(),Body.getYPosition()+(Body.getHeight()/2)-(leg1.getHeight()/2));
+        leg6.Coordenadas(Body.getXPosition()+Body.getWidth(),Body.getYPosition()+(Body.getHeight()/2)-(leg1.getHeight()/2));
     }
         
 }

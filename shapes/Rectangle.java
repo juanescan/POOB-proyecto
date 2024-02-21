@@ -262,5 +262,28 @@ public class Rectangle{
         yPosition += y;
         draw();
     }
+    
+    public int getXPosition(){
+        return xPosition;
+    }
+    
+    public int getYPosition(){
+        return yPosition;
+    }
+    
+    public int getWidth(){
+        return width;
+    }
+    
+    public int getHeight(){
+        return height;
+    }
+
+    public void Coordenadas(int x,int y){
+        erase();
+        xPosition = x;
+        yPosition = y;
+        draw();
+    }
 }
 

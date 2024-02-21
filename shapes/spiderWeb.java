@@ -22,6 +22,7 @@ public class spiderWeb
     private int distance;
     private Circle spot;
     private ArrayList<Circle> spots = new ArrayList<>();
+    private int count;
 
     /**
      * Constructor for objects of class spiderWeb
@@ -32,11 +33,12 @@ public class spiderWeb
         this.radius = radius;
         x = 50;
         y = 50;
-        centerX = 150;
-        centerY = 150;
+        centerX = 400;
+        centerY = 400;
         isVisible = false;
         linesAndCoordenates = new HashMap<>();
         this.spots = new ArrayList<>();
+        int count = 0;
     }
     
     //draw the spiderweb
@@ -92,15 +94,6 @@ public class spiderWeb
         spot.makeVisible();
         spots.add(spot);
     }
-    //revisar
-    public void spiderSitOnStrand(int strand) {
-        int size = (int)(radius/4);
-        int xStrand = findCoordenateX(radius,strand)-radius/8;
-        int yStrand = findCoordenateY(radius,strand)-radius/8;
-        Spider x = new Spider();
-        x.makeVisible();
-        x.moveTo(xStrand, yStrand);
-    }
     
     /**
      * Delete spot of a selected color
@@ -115,7 +108,23 @@ public class spiderWeb
             }
     }
 
-    
+    /**
+     *  Sit the spider in a specific strand
+     */
+    public void spiderSit(int strand) {
+        int size = (int)(radius/4);
+        int xStrand = findCoordenateX(radius,strand)-radius/8;
+        int yStrand = findCoordenateY(radius,strand)-radius/8;
+        if(count == 0){
+            Spider spider = new Spider(radius,xStrand,yStrand);
+            spider.makeVisible();
+            count += 1;
+        }
+        else{
+            throw new IllegalArgumentException("Solo se puede posicionar una araña en un strand.");
+        }
+    }
+  
     /**
      * Make visible the spiderweb
      */
@@ -148,27 +157,6 @@ public class spiderWeb
         
         public double getCurrentAngle(){
             return currentAngle;
-        }
-    }
-    
-    /**
-     * Static class point, save the coordenate x,y and current angle of a line
-     */
-    public static class Bridge {
-        private String color;
-        private int distance;
-
-        public Bridge(String color, int distance) {
-            this.color = color;
-            this.distance = distance;
-        }
-
-        public String getColor() {
-            return color;
-        }
-
-        public int getDistance() {
-            return distance;
         }
     }
     
