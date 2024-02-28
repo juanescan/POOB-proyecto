@@ -18,7 +18,7 @@ public class spiderWeb
     private boolean isVisible;
     private lines line;
     private int radius;
-    private Map<Integer, Point> linesAndCoordenates;
+    private Map<Integer, Strand> strandsAndCoordenates;
     private int distance;
     private Circle spot;
     private ArrayList<Circle> spots = new ArrayList<>();
@@ -36,7 +36,7 @@ public class spiderWeb
         centerX = 400;
         centerY = 400;
         isVisible = false;
-        linesAndCoordenates = new HashMap<>();
+        strandsAndCoordenates = new HashMap<>();
         this.spots = new ArrayList<>();
         int count = 0;
     }
@@ -46,13 +46,13 @@ public class spiderWeb
         double radiansBetween = 2*Math.PI/strands;
         double currentAngle = 0;
         for(int i=0;i < strands;i++){
-            int[] list = new int[3];
             x = (int)(centerX + radius * Math.cos(currentAngle));
             y = (int)(centerY + radius * Math.sin(currentAngle));
-            lines line = new lines(centerX,centerY,x,y);
-            line.makeVisible();
+            Strand strand = new Strand(x,y,currentAngle,strands,radius);
+            strandsAndCoordenates.put(i + 1, new Strand(x, y, currentAngle));
+            strand.makeVisible();
             currentAngle += radiansBetween;
-            linesAndCoordenates.put(i + 1, new Point(x, y, currentAngle));
+
         }
     }
     
@@ -134,37 +134,10 @@ public class spiderWeb
     }
     
     /**
-     * Static class point, save the coordenate x,y and current angle of a line
-     */
-    public static class Point {
-        private int x;
-        private int y;
-        private double currentAngle;
-
-        public Point(int x, int y, double currentAngle) {
-            this.x = x;
-            this.y = y;
-            this.currentAngle = currentAngle;
-        }
-
-        public int getX() {
-            return x;
-        }
-
-        public int getY() {
-            return y;
-        }
-        
-        public double getCurrentAngle(){
-            return currentAngle;
-        }
-    }
-    
-    /**
      * Get coordenate x in the hashmap
      */
     private int getXByIndex(int index) {
-        Point punto = linesAndCoordenates.get(index);
+        Strand punto = strandsAndCoordenates.get(index);
         if (punto != null) {
             return punto.getX();
         } else {
@@ -176,7 +149,7 @@ public class spiderWeb
      * Get coordenate y in the hashmap
      */
     private int getYByIndex(int index){
-        Point punto = linesAndCoordenates.get(index);
+        Strand punto = strandsAndCoordenates.get(index);
         if (punto != null){
             return punto.getY();
         } else{
@@ -188,7 +161,7 @@ public class spiderWeb
      * Get angle in the hashmap
      */
     private double getAngleByIndex(int index){
-        Point punto = linesAndCoordenates.get(index);
+        Strand punto = strandsAndCoordenates.get(index);
         if(punto != null){
             return punto.getCurrentAngle();
         } else{
@@ -215,8 +188,8 @@ public class spiderWeb
     /**
      * Return the HashMap linesAndCoordenates
      */
-    private Map<Integer, Point> getLinesAndCoordenates() {
-        return linesAndCoordenates;
+    private Map<Integer, Strand> getStrandsAndCoordenates() {
+        return strandsAndCoordenates;
     }
 
     
