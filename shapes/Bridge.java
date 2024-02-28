@@ -14,6 +14,7 @@ public class Bridge
     private int y2;
     private String color;
     private boolean isVisible;
+    private int firstStrand;
     
     /**
      * Constructor for objects of class Bridge
@@ -27,6 +28,7 @@ public class Bridge
         this.y2 = y2;
         isVisible = false;
         this.color = color;
+        
     
     }
     
@@ -49,9 +51,20 @@ public class Bridge
         return color;
     }
     
-    public int getXPosition(){
-        return x;
+    public void setDistance(int distance){
+        double angle = Math.atan2(y2-y,x2-x);
+        x2 = x + (int) (distance * Math.cos(angle));
+        y2 = y + (int) (distance * Math.sin(angle));
+        draw();
+        
     }
+    
+    public void setCoordinate(int x2,int y2){
+        this.x2 = x2;
+        this.y2 = y2;
+        draw();
+    }
+    
     
     
     

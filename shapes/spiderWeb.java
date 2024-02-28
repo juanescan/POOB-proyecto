@@ -75,11 +75,8 @@ public class spiderWeb
     }
     
     public void relocateBridge(String color, int distance){
-        if (distance <= 0 || distance > radius){
-            throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
         }
-        
-    }
+    
     
     public void delBridge(String color){
         for (int i = 0 ; i < bridges.size() ; i++) {
@@ -89,7 +86,6 @@ public class spiderWeb
                 this.bridges.remove(i); 
                 }
             }
-        
     }
 
     /**
