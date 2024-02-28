@@ -16,14 +16,14 @@ public class spiderWeb
     private int centerX;
     private int centerY;
     private boolean isVisible;
-    private lines line;
-    private int radius;
     private Map<Integer, Strand> strandsAndCoordenates;
     private int distance;
     private Circle spot;
     private ArrayList<Circle> spots = new ArrayList<>();
     private int count;
-
+    private int radius;
+    private Map<String, Bridge> bridges;
+    
     /**
      * Constructor for objects of class spiderWeb
      */
@@ -39,6 +39,7 @@ public class spiderWeb
         strandsAndCoordenates = new HashMap<>();
         this.spots = new ArrayList<>();
         int count = 0;
+        bridges = new HashMap<>();
     }
     
     //draw the spiderweb
@@ -64,14 +65,12 @@ public class spiderWeb
         throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
         }
         if(firstStrand<strands){
-            lines bridge = new lines(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                           ,findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
-            bridge.makeVisible();
+            constructBridgeCase1(color, distance, firstStrand);
+            bridges.put(color,new Bridge(x, y, getX2InCase1(firstStrand), getY2InCase1(firstStrand), color));
         }
         else if(firstStrand == strands){
-            lines bridge = new lines(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                           ,findCoordenateX(distance,1),findCoordenateY(distance,1),color);
-            bridge.makeVisible();
+            constructBridgeCase2(color, distance, firstStrand);
+            bridges.put(color, new Bridge(x, y, getX2InCase2(), getY2InCase2(), color));
         }
     }
     
@@ -191,7 +190,33 @@ public class spiderWeb
     private Map<Integer, Strand> getStrandsAndCoordenates() {
         return strandsAndCoordenates;
     }
-
     
+    private void constructBridgeCase1(String color, int distance, int firstStrand){
+        Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
+                        ,findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
+        bridge.makeVisible();
+    }
+    
+    private void constructBridgeCase2(String color, int distance, int firstStrand){
+        Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
+                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color);
+        bridge.makeVisible();
+    }
+    
+    private int getX2InCase1(int firstStrand){
+        return findCoordenateX(distance,firstStrand+1);
+    }
+    
+    private int getY2InCase1(int firstStrand){
+        return findCoordenateY(distance,firstStrand+1);
+    }
+    
+    private int getX2InCase2(){
+        return findCoordenateX(distance,1);
+    }
+    
+    private int getY2InCase2(){
+        return findCoordenateY(distance,1);
+    }
 }
 
