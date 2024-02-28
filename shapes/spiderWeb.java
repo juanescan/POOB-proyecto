@@ -75,13 +75,23 @@ public class spiderWeb
     }
     
     public void relocateBridge(String color, int distance){
+        if (distance <= 0 || distance > radius){
+            throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
+        }
         
     }
     
     public void delBridge(String color){
+        for (int i = 0 ; i < bridges.size() ; i++) {
+            Bridge bridges = this.bridges.get(i);
+            if (bridges.getColor().equals(color)) {
+                bridges.makeInvisible(); 
+                this.bridges.remove(i); 
+                }
+            }
         
     }
-    
+
     /**
      * Add a spot with a specific color and specific strand
      */

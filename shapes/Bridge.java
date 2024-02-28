@@ -39,4 +39,21 @@ public class Bridge
         isVisible = true;
         draw();
     }
+    
+    public void makeInvisible(){
+        isVisible = false;
+        draw();
+    }
+    
+    public String getColor(){
+        return color;
+    }
+    
+    public int getXPosition(){
+        return x;
+    }
+    
+    
+    
+    
 }
