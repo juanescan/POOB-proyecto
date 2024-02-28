@@ -78,13 +78,11 @@ public class spiderWeb
         }
     
     
-    public void delBridge(String color){
-        for (int i = 0 ; i < bridges.size() ; i++) {
-            Bridge bridges = this.bridges.get(i);
-            if (bridges.getColor().equals(color)) {
-                bridges.makeInvisible(); 
-                this.bridges.remove(i); 
-                }
+    public void delBridge(String color){ 
+            Bridge puente = bridges.get(color);
+            if (puente.getColor().equals(color)) {
+                puente.makeInvisible(); 
+                bridges.remove(color); 
             }
     }
 
