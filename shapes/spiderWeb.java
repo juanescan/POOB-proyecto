@@ -74,6 +74,9 @@ public class spiderWeb
         }
     }
     
+    /**
+     * relocate the bridge
+     */
     public void relocateBridge(String color, int distance){
         if (bridges.containsKey(color)){
             Bridge puente = bridges.get(color);
@@ -82,7 +85,9 @@ public class spiderWeb
         }
         }
     
-    
+    /**
+     * remove the bridge
+     */
     public void delBridge(String color){ 
             Bridge puente = bridges.get(color);
             if (puente.getColor().equals(color)) {
