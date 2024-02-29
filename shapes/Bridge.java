@@ -8,33 +8,24 @@
 public class Bridge
 {
     // instance variables - replace the example below with your own
-    private int x;
-    private int y;
-    private  int x2;
-    private int y2;
-    private String color;
+    private lines puente;
     private boolean isVisible;
-    private int firstStrand;
-    
     /**
      * Constructor for objects of class Bridge
      */
-    public Bridge(int x, int y, int x2, int y2, String color)
+    public Bridge(int x1, int y1, int x2, int y2, String color)
     {
         // initialise instance variables
-        this.x = x;
-        this.y = y;
-        this.x2 = x2;
-        this.y2 = y2;
+        puente = new lines(x1,y1,x2,y2,color);
         isVisible = false;
-        this.color = color;
-        
-    
     }
     
     private void draw(){
-        lines line = new lines(x,y,x2,y2,color);
-        line.makeVisible();
+        puente.makeVisible();
+    }
+    
+    private void erase(){
+        puente.makeInvisible();
     }
     
     public void makeVisible(){
@@ -44,29 +35,11 @@ public class Bridge
     
     public void makeInvisible(){
         isVisible = false;
-        draw();
+        erase();
     }
     
     public String getColor(){
-        return color;
+        return puente.getColor();
     }
-    
-    public void setDistance(int distance){
-        double angle = Math.atan2(y2-y,x2-x);
-        x2 = x + (int) (distance * Math.cos(angle));
-        y2 = y + (int) (distance * Math.sin(angle));
-        draw();
-        
-    }
-    
-    public void setCoordinate(int x2,int y2){
-        this.x2 = x2;
-        this.y2 = y2;
-        draw();
-    }
-    
-    
-    
-    
     
 }

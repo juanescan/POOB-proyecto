@@ -160,7 +160,23 @@ public class lines
             draw();
         }
     }
-
     
+    public void setDistance(int distance){
+        double angle = Math.atan2(y2-y1,x2-x1);
+        x2 = x1 + (int) (distance * Math.cos(angle));
+        y2 = y1 + (int) (distance * Math.sin(angle));
+        draw();
+        
+    }
+    
+    public void setCoordinate(int x2,int y2){
+        this.x2 = x2;
+        this.y2 = y2;
+        draw();
+    }
+    
+    public String getColor(){
+        return color;
+    }
     
 }
