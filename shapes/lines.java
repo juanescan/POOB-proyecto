@@ -25,7 +25,7 @@ public class lines
         isVisible = false;
         color = "black";
     }
-    
+
     public lines(int x1,int y1,int x2,int y2,String c){
         this.x1 = x1;
         this.y1 = y1;
@@ -35,6 +35,9 @@ public class lines
         color = c;
     }
     
+    /**
+     * draw the object
+     */
     private void draw(){
         Canvas canvas = Canvas.getCanvas();
         int[] xpoints = { x1, x2};
@@ -43,16 +46,26 @@ public class lines
         canvas.wait(10);
     }
     
+    /**
+     * makes the object visible
+     */
     public void makeVisible(){
         isVisible = true;
         draw();
     }
     
+    /**
+     * 
+    makes the object invisible
+     */
     public void makeInvisible(){
         erase();
         isVisible = false;
     }
     
+    /**
+     * 
+     */
     public void moveTo(int x,int y){
         erase();
         x1 += x;

@@ -20,22 +20,15 @@ public class Bridge
         isVisible = false;
     }
     
-    private void draw(){
-        puente.makeVisible();
-    }
-    
-    private void erase(){
-        puente.makeInvisible();
-    }
     
     public void makeVisible(){
+        puente.makeVisible();
         isVisible = true;
-        draw();
     }
     
     public void makeInvisible(){
+        puente.makeInvisible();
         isVisible = false;
-        erase();
     }
     
     public String getColor(){
