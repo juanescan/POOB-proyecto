@@ -23,6 +23,7 @@ public class spiderWeb
     private int count;
     private int radius;
     private Map<String, Bridge> bridges;
+    private Spider spider;
     
     /**
      * Constructor for objects of class spiderWeb
@@ -135,6 +136,15 @@ public class spiderWeb
         }
         else{
             throw new IllegalArgumentException("Solo se puede posicionar una araña en un strand.");
+        }
+    }
+    
+    /**
+     * walk through the spider web
+     */
+    public void spiderWalk(boolean avance){
+        if (avance == true){
+            this.spider.moveToCoordinates(400,400);
         }
     }
   

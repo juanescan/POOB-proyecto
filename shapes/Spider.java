@@ -92,14 +92,6 @@ public class Spider
         Body.moveDiagonally(x,y);
     }
     
-    /**
-     * Move the spider to a specific coordenate
-     */
-    public void moveTo(int x,int y){
-        Head.moveToCoordenates(x,y);
-        Body.moveToCoordinates(x,y);
-    }
-    
     private void organize(){
         Body.Coordenadas(Head.getXPosition(),Head.getYPosition() + Head.getDiameter());
         leg1.Coordenadas(Body.getXPosition()-Body.getWidth(),Body.getYPosition());
@@ -110,4 +102,41 @@ public class Spider
         leg6.Coordenadas(Body.getXPosition()+Body.getWidth(),Body.getYPosition()+(Body.getHeight()/2)-(leg1.getHeight()/2));
     }
     
+    /**
+     * Move the spider to a specific coordenate
+     */
+    public void moveToCoordinates(int x, int y) {
+        int dx = x - Head.getXPosition();
+        int dy = y - Head.getYPosition();
+    
+        Head.moveTo(dx, dy);
+        Body.moveTo(dx, dy);
+    
+        leg1.moveTo(dx, dy);
+        leg2.moveTo(dx, dy);
+        leg3.moveTo(dx, dy);
+        leg4.moveTo(dx, dy);
+        leg5.moveTo(dx, dy);
+        leg6.moveTo(dx, dy);
+    }
+    
+    public void moveSlowlyToCoordinates(int targetX, int targetY, int speed) {
+        int currentX = Head.getXPosition();
+        int currentY = Head.getYPosition();
+        int dx = targetX - currentX;
+        int dy = targetY - currentY;
+        double distance = Math.sqrt(dx * dx + dy * dy); 
+        int steps = (int) (distance / speed);
+        double stepX = dx / (double) steps;
+        double stepY = dy / (double) steps;
+        for (int i = 0; i < steps; i++) {
+            currentX += stepX;
+            currentY += stepY;
+            moveToCoordinates((int) currentX, (int) currentY);
+        }
+    }
+
+    
+    
+
 }
