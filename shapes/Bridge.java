@@ -35,4 +35,8 @@ public class Bridge
         return puente.getColor();
     }
     
+    public void setDistance(int distance){
+        puente.setDistance(distance);
+    }
+    
 }

@@ -75,6 +75,11 @@ public class spiderWeb
     }
     
     public void relocateBridge(String color, int distance){
+        if (bridges.containsKey(color)){
+            Bridge puente = bridges.get(color);
+            puente.setDistance(distance);
+            delBridge(color);
+        }
         }
     
     
