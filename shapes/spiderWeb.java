@@ -18,8 +18,7 @@ public class spiderWeb
     private boolean isVisible;
     private Map<Integer, Strand> strandsAndCoordenates;
     private int distance;
-    private Circle spot;
-    private ArrayList<Circle> spots = new ArrayList<>();
+    private ArrayList<Spot> spots = new ArrayList<>();
     private int count;
     private int radius;
     private Map<String, Bridge> bridges;
@@ -38,7 +37,7 @@ public class spiderWeb
         centerY = 400;
         isVisible = false;
         strandsAndCoordenates = new HashMap<>();
-        this.spots = new ArrayList<>();
+        spots = new ArrayList<>();
         int count = 0;
         bridges = new HashMap<>();
     }
@@ -80,8 +79,8 @@ public class spiderWeb
      */
     public void relocateBridge(String color, int distance){
         if (bridges.containsKey(color)){
-            Bridge puente = bridges.get(color);
-            puente.setDistance(distance);
+            Bridge bridge = bridges.get(color);
+            bridge.setDistance(distance);
             delBridge(color);
         }
         }
@@ -89,13 +88,14 @@ public class spiderWeb
     /**
      * remove the bridge
      */
-    public void delBridge(String color){ 
-            Bridge puente = bridges.get(color);
-            if (puente.getColor().equals(color)) {
-                puente.makeInvisible(); 
-                bridges.remove(color); 
-            }
+    public void delBridge(String color) { 
+        Bridge bridge = bridges.get(color);
+        if (bridge.getColor().equals(color)) {
+            bridge.makeInvisible(); 
+            bridges.remove(color); 
+        }
     }
+
 
     /**
      * Add a spot with a specific color and specific strand
@@ -104,7 +104,7 @@ public class spiderWeb
         int size = (int)(radius/4);
         int xPos = findCoordenateX(radius,strand)-radius/8;
         int yPos = findCoordenateY(radius,strand)- radius/8;
-        Circle spot = new Circle(size,xPos,yPos,color);
+        Spot spot = new Spot(size,xPos,yPos,color);
         spot.makeVisible();
         spots.add(spot);
     }
@@ -114,7 +114,7 @@ public class spiderWeb
      */
     public void delSpot(String color) {
         for (int i = 0 ; i < spots.size() ; i++) {
-            Circle spot = spots.get(i);
+            Spot spot = spots.get(i);
             if (spot.getColor().equals(color)) {
                 spot.makeInvisible(); 
                 spots.remove(i); 
@@ -126,13 +126,19 @@ public class spiderWeb
      *  Sit the spider in a specific strand
      */
     public void spiderSit(int strand) {
-        int size = (int)(radius/4);
-        int xStrand = findCoordenateX(radius,strand)-radius/8;
-        int yStrand = findCoordenateY(radius,strand)-radius/8;
         if(count == 0){
-            Spider spider = new Spider(radius,xStrand,yStrand);
-            spider.makeVisible();
-            count += 1;
+            if(strand == 0){
+                spider = new Spider(radius,centerX-radius/8,centerY-radius/8);
+                spider.makeVisible();
+                count += 1;
+            }
+            else{
+                int xStrand = findCoordenateX(radius,strand)-radius/8;
+                int yStrand = findCoordenateY(radius,strand)-radius/8;
+                spider = new Spider(radius,xStrand,yStrand);
+                spider.makeVisible();
+                count += 1;
+            }
         }
         else{
             throw new IllegalArgumentException("Solo se puede posicionar una araña en un strand.");
@@ -143,8 +149,10 @@ public class spiderWeb
      * walk through the spider web
      */
     public void spiderWalk(boolean avance){
+        int xPos = findCoordenateX(radius,strand)-radius/8;
+        int yPos = findCoordenateY(radius,strand)- radius/8;
         if (avance == true){
-            this.spider.moveToCoordinates(400,400);
+            spider.moveToCoordinates(400,400);
         }
     }
   
