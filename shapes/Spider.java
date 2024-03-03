@@ -1,14 +1,13 @@
 
 
 /**
- * Write a description of class Spider here.
+ * Spider.
  * 
  * @author (your name) 
  * @version (a version number or a date)
  */
 public class Spider
 {
-    // instance variables - replace the example below with your own
     private Circle Head;
     private Rectangle Body;
     private Rectangle leg1;
@@ -23,6 +22,8 @@ public class Spider
 
     /**
      * Constructor for objects of class Spider
+     * @param xStrand x part of the first Coordenate of the bridge
+     * @param yStrand y part of the first Coordenate of the bridge
      */
     public Spider(int size, int xStrand, int yStrand)
     {
@@ -92,6 +93,9 @@ public class Spider
         Body.moveDiagonally(x,y);
     }
     
+    /**
+     * Organize the spider to keep the shape
+     */
     private void organize(){
         Body.Coordenadas(Head.getXPosition(),Head.getYPosition() + Head.getDiameter());
         leg1.Coordenadas(Body.getXPosition()-Body.getWidth(),Body.getYPosition());
@@ -111,7 +115,6 @@ public class Spider
     
         Head.moveTo(dx, dy);
         Body.moveTo(dx, dy);
-    
         leg1.moveTo(dx, dy);
         leg2.moveTo(dx, dy);
         leg3.moveTo(dx, dy);
@@ -120,6 +123,9 @@ public class Spider
         leg6.moveTo(dx, dy);
     }
     
+    /**
+     * Move the spider slow
+     */
     public void moveSlowlyToCoordinates(int targetX, int targetY, int speed) {
         int currentX = Head.getXPosition();
         int currentY = Head.getYPosition();

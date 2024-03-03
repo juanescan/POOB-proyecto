@@ -1,43 +1,49 @@
 
 /**
- * Write a description of class Bridge here.
+ * Bridge.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author (Juan Cancelado y Santiago Córdoba) 
+ * @version (1.0)
  */
 public class Bridge
 {
-    // instance variables - replace the example below with your own
     private lines bridge;
     private boolean isVisible;
     
     /**
      * Constructor for objects of class Bridge
+     * @param x1 the x part of the first Coordenate of the bridge
+     * @param y1 the y part of the first Coordenate of the bridge
+     * @param x2 the x part of the second Coordenate of the bridge
+     * @param y1 the y part of the seconf Coordenate of the bridge
+     * @param color of the bridge
      */
     public Bridge(int x1, int y1, int x2, int y2, String color)
     {
-        // initialise instance variables
         bridge = new lines(x1,y1,x2,y2,color);
         isVisible = false;
     }
     
-    
+    /**
+     * Make visible the spiderweb
+     */
     public void makeVisible(){
         bridge.makeVisible();
         isVisible = true;
     }
     
+    /**
+     * Make invisible the spiderweb
+     */
     public void makeInvisible(){
         bridge.makeInvisible();
         isVisible = false;
     }
     
+    /**
+     * Get the color of the bridge
+     */
     public String getColor(){
         return bridge.getColor();
     }
-    
-    public void setDistance(int distance){
-        bridge.setDistance(distance);
-    }
-    
 }

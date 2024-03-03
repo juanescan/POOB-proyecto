@@ -1,8 +1,8 @@
 import java.awt.*;
 /**
- * Write a description of class lines here.
+ * lines.
  * 
- * @author (your name) 
+ * @author (Juan Cancelado y Santiago Córdoba) 
  * @version (a version number or a date)
  */
 public class lines
@@ -15,7 +15,11 @@ public class lines
     private boolean isVisible;
 
     /**
-     * Constructor for objects of class lines
+     * Constructor for objects of class lines (use to create strands)
+     * @param x1 the x part of the first Coordenate of the bridge
+     * @param y1 the y part of the first Coordenate of the bridge
+     * @param x2 the x part of the second Coordenate of the bridge
+     * @param y1 the y part of the seconf Coordenate of the bridge
      */
     public lines(int x1,int y1,int x2,int y2){
         this.x1 = x1;
@@ -26,6 +30,14 @@ public class lines
         color = "black";
     }
 
+    /**
+     * Constructor for objects of class lines (use to create bridges)
+     * @param x1 the x part of the first Coordenate of the bridge
+     * @param y1 the y part of the first Coordenate of the bridge
+     * @param x2 the x part of the second Coordenate of the bridge
+     * @param y1 the y part of the seconf Coordenate of the bridge
+     * color of the line
+     */
     public lines(int x1,int y1,int x2,int y2,String c){
         this.x1 = x1;
         this.y1 = y1;
@@ -55,24 +67,11 @@ public class lines
     }
     
     /**
-     * 
-    makes the object invisible
+     * makes the object invisible
      */
     public void makeInvisible(){
         erase();
         isVisible = false;
-    }
-    
-    /**
-     * 
-     */
-    public void moveTo(int x,int y){
-        erase();
-        x1 += x;
-        x2 += x;
-        y1 += y;
-        y2 += y;
-        draw();
     }
     
     private void erase(){
@@ -80,112 +79,6 @@ public class lines
             Canvas canvas = Canvas.getCanvas();
             canvas.erase(this);
         }
-    }
-    
-    public void moveRight(int distance){
-        x1 += distance;
-        x2 += distance;
-        redraw();
-    }
-    
-    private void redraw(){
-        erase();
-        draw();
-    }
-    
-    public void moveLeft(int distance){
-        x1 -= distance;
-        x2 -= distance;
-        redraw();
-    }
-    
-    public void up(int distance){
-        y1 -= distance;
-        y2 -= distance;
-        redraw();
-    }
-    
-    public void down(int distance){
-        y1 += distance;
-        y2 += distance;
-        redraw();
-    }
-    
-    public void center(int xCenter, int yCenter) {
-        int lineCenterX = (x1 + x2) / 2;
-        int lineCenterY = (y1 + y2) / 2;
-
- 
-        int dx = xCenter - lineCenterX;
-        int dy = yCenter - lineCenterY;
-
-        x1 += dx;
-        x2 += dx;
-        y1 += dy;
-        y2 += dy;
-
-        redraw();
-    }
-   
-    public void moveDiagonally(int x,int y){
-        for(int i = 0; i < Math.max(x,y) ; i++){
-            if (i < x){
-                slowMoveHorizontal(1);
-            }
-            if (i < y){
-                slowMoveVertical(1);
-            }
-            
-        }
-        
-    }
-    
-    public void slowMoveVertical(int distance){
-        int delta;
-
-        if(distance < 0) {
-            delta = -1;
-            distance = -distance;
-        } else {
-            delta = 1;
-        }
-
-        for(int i = 0; i < distance; i++){
-            y1+= delta;
-            y2 += delta;
-            draw();
-        }
-    }
-    
-    public void slowMoveHorizontal(int distance){
-        int delta;
-
-        if(distance < 0) {
-            delta = -1;
-            distance = -distance;
-        } else {
-            delta = 1;
-        }
-
-        for(int i = 0; i < distance; i++){
-            x1 += delta;
-            x2 += delta;
-            draw();
-        }
-    }
-    
-    public void setDistance(int distance){
-        double angle = Math.atan2(y2-y1,x2-x1);
-        x2 = x1 + (int) (distance * Math.cos(angle));
-        y2 = y1 + (int) (distance * Math.sin(angle));
-        draw();
-        
-    }
-    
-    public void setCoordinate(int x2,int y2){
-        this.x2 = x2;
-        this.y2 = y2;
-        draw();
     }
     
     public String getColor(){

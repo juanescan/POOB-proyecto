@@ -3,7 +3,7 @@ import java.util.*;
 import java.util.ArrayList;
 
 /**
- * Write a description of class spiderWeb here.
+ * SpiderWeb.
  * 
  * @author (Juan Cancelado y Santiago Córdoba) 
  * @version (1.0)
@@ -18,14 +18,18 @@ public class spiderWeb
     private boolean isVisible;
     private Map<Integer, Strand> strandsAndCoordenates;
     private int distance;
-    private ArrayList<Spot> spots = new ArrayList<>();
+    private Map<String,Spot> spots;
     private int count;
     private int radius;
     private Map<String, Bridge> bridges;
     private Spider spider;
+    private int strand;
+    private Map<String,Integer> colorAndStrand;
     
     /**
      * Constructor for objects of class spiderWeb
+     * @param strands number of the strands of the SpiderWeb
+     * @param radius the size of the SpiderWeb
      */
     public spiderWeb(int strands,int radius)
     {
@@ -37,9 +41,10 @@ public class spiderWeb
         centerY = 400;
         isVisible = false;
         strandsAndCoordenates = new HashMap<>();
-        spots = new ArrayList<>();
+        spots = new HashMap<>();
         int count = 0;
         bridges = new HashMap<>();
+        colorAndStrand = new HashMap<>();
     }
     
     //draw the spiderweb
@@ -58,35 +63,48 @@ public class spiderWeb
     }
     
     /**
-     * Add Bridge with color, distances and a specific strand
+     * Add Bridge
+     * @param color, the color of the bridge(the color can´t repeat)
+     * @param distance is the distance to the center of the SpiderWeb
+     * @param firstStrand is the initial strand where begin the bridge
      */
     public void addBridge(String color, int distance, int firstStrand){
         if (distance <= 0 || distance > radius) {
         throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
         }
         if(firstStrand<strands){
-            constructBridgeCase1(color, distance, firstStrand);
-            bridges.put(color,new Bridge(x, y, getX2InCase1(firstStrand), getY2InCase1(firstStrand), color));
+            Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
+                        ,findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
+            bridge.makeVisible();
+            bridges.put(color,bridge);
+            colorAndStrand.put(color,firstStrand);
         }
         else if(firstStrand == strands){
-            constructBridgeCase2(color, distance, firstStrand);
-            bridges.put(color, new Bridge(x, y, getX2InCase2(), getY2InCase2(), color));
+            Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
+                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color);
+            bridge.makeVisible();
+            bridges.put(color,bridge);
+            colorAndStrand.put(color,firstStrand);
         }
     }
     
     /**
-     * relocate the bridge
+     * relocate the bridge of a specific color
+     * @param color is to select which color bridge we will move
+     * @param distance is the new distance to the center of the SpiderWeb
      */
     public void relocateBridge(String color, int distance){
         if (bridges.containsKey(color)){
             Bridge bridge = bridges.get(color);
-            bridge.setDistance(distance);
             delBridge(color);
+            int saveStrand = colorAndStrand.get(color);
+            addBridge(color,distance,saveStrand);
         }
-        }
+    }
     
     /**
-     * remove the bridge
+     * remove the bridge of a specific color
+     * @param color is to select which color bridge we will remove
      */
     public void delBridge(String color) { 
         Bridge bridge = bridges.get(color);
@@ -96,9 +114,10 @@ public class spiderWeb
         }
     }
 
-
     /**
      * Add a spot with a specific color and specific strand
+     * @param color is the color of the new spot (the color can´t repeat)
+     * @param strand is to select in which strand the spot going to be created
      */
     public void addSpot(String color,int strand){
         int size = (int)(radius/4);
@@ -106,53 +125,49 @@ public class spiderWeb
         int yPos = findCoordenateY(radius,strand)- radius/8;
         Spot spot = new Spot(size,xPos,yPos,color);
         spot.makeVisible();
-        spots.add(spot);
+        spots.put(color,spot);
     }
     
     /**
      * Delete spot of a selected color
+     * @param color is to select which spot remove
      */
     public void delSpot(String color) {
-        for (int i = 0 ; i < spots.size() ; i++) {
-            Spot spot = spots.get(i);
-            if (spot.getColor().equals(color)) {
-                spot.makeInvisible(); 
-                spots.remove(i); 
-                }
-            }
+         
+        Spot spot = spots.get(color);
+        if (spot.getColor().equals(color)) {
+            spot.makeInvisible(); 
+            spots.remove(color); 
+        }
+            
     }
 
     /**
-     *  Sit the spider in a specific strand
+     *  Sit the spider in the center of SpiderWeb 
+     *  @strand is to select in which strand the spider going to walk
      */
     public void spiderSit(int strand) {
+        this.strand = strand;
         if(count == 0){
-            if(strand == 0){
-                spider = new Spider(radius,centerX-radius/8,centerY-radius/8);
-                spider.makeVisible();
-                count += 1;
-            }
-            else{
-                int xStrand = findCoordenateX(radius,strand)-radius/8;
-                int yStrand = findCoordenateY(radius,strand)-radius/8;
-                spider = new Spider(radius,xStrand,yStrand);
-                spider.makeVisible();
-                count += 1;
-            }
-        }
-        else{
-            throw new IllegalArgumentException("Solo se puede posicionar una araña en un strand.");
+            spider = new Spider(radius-(radius/5),centerX-radius/9,centerY-radius/6);
+            spider.makeVisible();
+            count += 1;
+        }else{
+            spider.moveToCoordinates(centerX-radius/9,centerY-radius/6);   
         }
     }
     
     /**
-     * walk through the spider web
+     * walk through the spiderWeb
+     * @advance is to determinate if the spider advance through the SpiderWeb or if retrocedate in some cases
      */
-    public void spiderWalk(boolean avance){
-        int xPos = findCoordenateX(radius,strand)-radius/8;
-        int yPos = findCoordenateY(radius,strand)- radius/8;
-        if (avance == true){
-            spider.moveToCoordinates(400,400);
+    public void spiderWalk(boolean advance){
+        if (advance == true){
+            int xPos = findCoordenateX(radius,strand)-radius/8;
+            int yPos = findCoordenateY(radius,strand)- radius/8;
+            spider.moveSlowlyToCoordinates(xPos,yPos,8);
+        }else if(advance == false ){ 
+            spider.moveSlowlyToCoordinates(centerX-radius/9,centerY-radius/6,8);
         }
     }
   
@@ -166,6 +181,7 @@ public class spiderWeb
     
     /**
      * Get coordenate x in the hashmap
+     * @param index is the number of the strand
      */
     private int getXByIndex(int index) {
         Strand punto = strandsAndCoordenates.get(index);
@@ -178,6 +194,7 @@ public class spiderWeb
     
     /**
      * Get coordenate y in the hashmap
+     * @param index is the number of the strand
      */
     private int getYByIndex(int index){
         Strand punto = strandsAndCoordenates.get(index);
@@ -190,6 +207,7 @@ public class spiderWeb
     
     /**
      * Get angle in the hashmap
+     * @param index is the number of the strand
      */
     private double getAngleByIndex(int index){
         Strand punto = strandsAndCoordenates.get(index);
@@ -202,6 +220,8 @@ public class spiderWeb
     
     /**
      * Find the new coordenate x
+     * @param distance is the distance of the new point 
+     * @param firstStrand is to select in what strand calculare the value of coordenate x
      */
     private int findCoordenateX(int distance,int firstStrand){ 
         int x2 = (int)(centerX + distance * Math.cos(getAngleByIndex(firstStrand)));
@@ -209,7 +229,9 @@ public class spiderWeb
     }
     
     /**
-     * Find the new coordenate x
+     * Find the new coordenate y
+     * @param distance is the distance of the new point 
+     * @param firstStrand is to select in what strand calculare the value of coordenate x
      */
     private int findCoordenateY(int distance,int firstStrand){ 
         int y2 = (int)(centerY + distance * Math.sin(getAngleByIndex(firstStrand)));
@@ -222,33 +244,6 @@ public class spiderWeb
     private Map<Integer, Strand> getStrandsAndCoordenates() {
         return strandsAndCoordenates;
     }
-    
-    private void constructBridgeCase1(String color, int distance, int firstStrand){
-        Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                        ,findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
-        bridge.makeVisible();
-    }
-    
-    private void constructBridgeCase2(String color, int distance, int firstStrand){
-        Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color);
-        bridge.makeVisible();
-    }
-    
-    private int getX2InCase1(int firstStrand){
-        return findCoordenateX(distance,firstStrand+1);
-    }
-    
-    private int getY2InCase1(int firstStrand){
-        return findCoordenateY(distance,firstStrand+1);
-    }
-    
-    private int getX2InCase2(){
-        return findCoordenateX(distance,1);
-    }
-    
-    private int getY2InCase2(){
-        return findCoordenateY(distance,1);
-    }
+
 }
 
