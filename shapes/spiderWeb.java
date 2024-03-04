@@ -244,6 +244,35 @@ public class spiderWeb
     private Map<Integer, Strand> getStrandsAndCoordenates() {
         return strandsAndCoordenates;
     }
+    
+  
+    public void addStrand() {
+    double angleIncrement = 2 * Math.PI / strands;
+    double angle = 0; 
+    Set<Double> existingAngles = new HashSet<>();
+    for (Strand existingStrand : strandsAndCoordenates.values()) {
+        existingAngles.add(existingStrand.getCurrentAngle());
+    }
+    while (existingAngles.contains(angle)) {
+        angle += angleIncrement;
+    }
+    int newX = (int)(centerX + radius * Math.cos(angle));
+    int newY = (int)(centerY + radius * Math.sin(angle));
+    Strand newStrand = new Strand(newX, newY, angle);
+    strandsAndCoordenates.put(strandsAndCoordenates.size() + 1, newStrand);
+    newStrand.makeVisible();
+    strands++;
+    }
+
+    public ArrayList<Integer> countBridgesByColor(String color) {
+        ArrayList<Integer> bridgeCounts = new ArrayList<>();
+        for (Bridge bridge : bridges.values()) {
+            if (bridge.getColor().equals(color)) {
+                bridgeCounts.add(1); 
+            }
+        }
+    return bridgeCounts;
+    }
 
 }
 
