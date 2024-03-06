@@ -52,8 +52,8 @@ public class Strand
      * Borra la representación visual del Strand.
      */
     private void erase() {
-    lines line = new lines(centerX, centerY, x, y);
-    line.makeInvisible();   
+        lines line = new lines(centerX, centerY, x, y);
+        line.makeInvisible();   
     }
     
     public void makeInvisible(){

@@ -52,46 +52,6 @@ public class Spider
         leg6.makeVisible();
         organize();
     }
-      
-    /**
-     * Move the spider to the right 
-     */
-    public void moveRight(int x){
-        Head.moveRight(x);
-        Body.moveRight(x);
-    }
-    
-    /**
-     * Move the spider to the left
-     */
-    public void moveLeft(int x){
-        Head.moveLeft(x);
-        Body.moveLeft(x);
-    }
-    
-    /**
-     * Move the spider up
-     */
-    public void moveUp(int y){
-        Head.moveUp(y);
-        Body.moveUp(y);
-    }
-    
-    /**
-     * Move the spider down
-     */
-    public void moveDown(int y){
-        Head.moveDown(y);
-        Body.moveDown(y);
-    }
-    
-    /**
-     * Move the spider in diagonal way
-     */
-    public void moveSlowDiagonal(int x,int y){
-        Head.moveDiagonally(x,y);
-        Body.moveDiagonally(x,y);
-    }
     
     /**
      * Organize the spider to keep the shape
@@ -109,7 +69,7 @@ public class Spider
     /**
      * Move the spider to a specific coordenate
      */
-    public void moveToCoordinates(int x, int y) {
+    public void moveToCoordenates(int x, int y) {
         int dx = x - Head.getXPosition();
         int dy = y - Head.getYPosition();
     
@@ -126,7 +86,7 @@ public class Spider
     /**
      * Move the spider slow
      */
-    public void moveSlowlyToCoordinates(int targetX, int targetY, int speed) {
+    public void moveSlowlyToCoordenates(int targetX, int targetY, int speed) {
         int currentX = Head.getXPosition();
         int currentY = Head.getYPosition();
         int dx = targetX - currentX;
@@ -138,7 +98,7 @@ public class Spider
         for (int i = 0; i < steps; i++) {
             currentX += stepX;
             currentY += stepY;
-            moveToCoordinates((int) currentX, (int) currentY);
+            moveToCoordenates((int) currentX, (int) currentY);
         }
     }
 

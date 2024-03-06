@@ -153,7 +153,7 @@ public class spiderWeb
             spider.makeVisible();
             count += 1;
         }else{
-            spider.moveToCoordinates(centerX-radius/9,centerY-radius/6);   
+            spider.moveToCoordenates(centerX-radius/9,centerY-radius/6);   
         }
     }
     
@@ -165,9 +165,9 @@ public class spiderWeb
         if (advance == true){
             int xPos = findCoordenateX(radius,strand)-radius/8;
             int yPos = findCoordenateY(radius,strand)- radius/8;
-            spider.moveSlowlyToCoordinates(xPos,yPos,8);
+            spider.moveSlowlyToCoordenates(xPos,yPos,8);
         }else if(advance == false ){ 
-            spider.moveSlowlyToCoordinates(centerX-radius/9,centerY-radius/6,8);
+            spider.moveSlowlyToCoordenates(centerX-radius/9,centerY-radius/6,8);
         }
     }
   
@@ -247,31 +247,31 @@ public class spiderWeb
     
   
     public void addStrand() {
-    double angleIncrement = 2 * Math.PI / strands;
-    double angle = 0; 
-    Set<Double> existingAngles = new HashSet<>();
-    for (Strand existingStrand : strandsAndCoordenates.values()) {
-        existingAngles.add(existingStrand.getCurrentAngle());
-    }
-    while (existingAngles.contains(angle)) {
-        angle += angleIncrement;
-    }
-    int newX = (int)(centerX + radius * Math.cos(angle));
-    int newY = (int)(centerY + radius * Math.sin(angle));
-    Strand newStrand = new Strand(newX, newY, angle);
-    strandsAndCoordenates.put(strandsAndCoordenates.size() + 1, newStrand);
-    newStrand.makeVisible();
-    strands++;
+        double angleIncrement = 2 * Math.PI / strands;
+        double angle = 0; 
+        Set<Double> existingAngles = new HashSet<>();
+        for (Strand existingStrand : strandsAndCoordenates.values()) {
+            existingAngles.add(existingStrand.getCurrentAngle());
+        }
+        while (existingAngles.contains(angle)) {
+            angle += angleIncrement;
+        }
+        int newX = (int)(centerX + radius * Math.cos(angle));
+        int newY = (int)(centerY + radius * Math.sin(angle));
+        Strand newStrand = new Strand(newX, newY, angle);
+        strandsAndCoordenates.put(strandsAndCoordenates.size() + 1, newStrand);
+        newStrand.makeVisible();
+        strands++;
     }
 
-    public ArrayList<Integer> countBridgesByColor(String color) {
+    public ArrayList<Integer> bridge(String color) {
         ArrayList<Integer> bridgeCounts = new ArrayList<>();
         for (Bridge bridge : bridges.values()) {
             if (bridge.getColor().equals(color)) {
                 bridgeCounts.add(1); 
             }
         }
-    return bridgeCounts;
+        return bridgeCounts;
     }
 
 }
