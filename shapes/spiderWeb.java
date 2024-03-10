@@ -19,7 +19,6 @@ public class spiderWeb
     private Map<Integer, Strand> strandsAndCoordenates;
     private int distance;
     private Map<String,Spot> spots;
-    private int count;
     private int radius;
     private Map<String, Bridge> bridges;
     private Spider spider;
@@ -55,7 +54,7 @@ public class spiderWeb
             x = (int)(centerX + radius * Math.cos(currentAngle));
             y = (int)(centerY + radius * Math.sin(currentAngle));
             Strand strand = new Strand(x,y,currentAngle,strands,radius);
-            strandsAndCoordenates.put(i + 1, new Strand(x, y, currentAngle));
+            strandsAndCoordenates.put(i + 1, strand);
             strand.makeVisible();
             currentAngle += radiansBetween;
 
@@ -73,8 +72,7 @@ public class spiderWeb
         throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
         }
         if(firstStrand<strands){
-            Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                        ,findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
+            Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
             bridge.makeVisible();
             bridges.put(color,bridge);
             colorAndStrand.put(color,firstStrand);
@@ -148,13 +146,12 @@ public class spiderWeb
      */
     public void spiderSit(int strand) {
         this.strand = strand;
-        if(count == 0){
+        if(spider == null){
             spider = new Spider(radius-(radius/5),centerX-radius/9,centerY-radius/6);
-            spider.makeVisible();
-            count += 1;
-        }else{
-            spider.moveToCoordenates(centerX-radius/9,centerY-radius/6);   
         }
+        spider.makeVisible();
+        spider.moveToCoordenates(centerX-radius/9,centerY-radius/6);   
+
     }
     
     /**
@@ -177,6 +174,49 @@ public class spiderWeb
     public void makeVisible(){
         isVisible = true;
         draw();
+        for(Bridge bridge: bridges.values()){
+            bridge.makeVisible();
+        }
+        for(Spot spot: spots.values()){
+            spot.makeVisible();
+        }
+        for(Strand strand: strandsAndCoordenates.values()){
+            strand.makeVisible();
+        }
+    }
+    
+    /**
+     * Make invisible SpiderWeb, bridges, spots, spider
+     */
+    public void makeInvisible(){
+        for(Bridge bridge: bridges.values()){
+            bridge.makeInvisible();
+        }
+        for(Spot spot: spots.values()){
+            spot.makeInvisible();
+        }
+        for(Strand strand: strandsAndCoordenates.values()){
+            strand.makeInvisible();
+        }
+        spider.makeInvisible();
+    }
+    
+    /**
+     * Eliminate SpiderWeb, bridges, spots
+     */
+    private void eliminate(){
+        for(Bridge bridge: bridges.values()){
+            bridge.makeInvisible();
+            bridges.remove(bridge);
+        }
+        for(Spot spot: spots.values()){
+            spot.makeInvisible();
+            spots.remove(spot);
+        }
+        for(Strand strand: strandsAndCoordenates.values()){
+            strand.makeInvisible();
+            strandsAndCoordenates.remove(strand);
+        }
     }
     
     /**
@@ -246,22 +286,24 @@ public class spiderWeb
     }
     
   
+    /**
+     * Add one strand to the SpiderWeb
+     */
     public void addStrand() {
-        double angleIncrement = 2 * Math.PI / strands;
-        double angle = 0; 
-        Set<Double> existingAngles = new HashSet<>();
-        for (Strand existingStrand : strandsAndCoordenates.values()) {
-            existingAngles.add(existingStrand.getCurrentAngle());
-        }
-        while (existingAngles.contains(angle)) {
-            angle += angleIncrement;
-        }
-        int newX = (int)(centerX + radius * Math.cos(angle));
-        int newY = (int)(centerY + radius * Math.sin(angle));
-        Strand newStrand = new Strand(newX, newY, angle);
-        strandsAndCoordenates.put(strandsAndCoordenates.size() + 1, newStrand);
-        newStrand.makeVisible();
-        strands++;
+        eliminate();
+        strands += 1;
+        draw();
+    }
+    
+    /**
+     * Enlarge the SpiderWeb
+     * @param
+     */
+    public void enlarge(int percentage){
+        eliminate();
+        double multi = 1 + (percentage/100);
+        radius = (int) (radius * multi);
+        draw();
     }
 
     public ArrayList<Integer> bridge(String color) {

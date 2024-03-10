@@ -54,6 +54,20 @@ public class Spider
     }
     
     /**
+     * Make invisible the spider
+     */
+    public void makeInvisible(){
+        Head.makeInvisible();
+        Body.makeInvisible();
+        leg1.makeInvisible();
+        leg2.makeInvisible();
+        leg3.makeInvisible();
+        leg4.makeInvisible();
+        leg5.makeInvisible();
+        leg6.makeInvisible();
+    }
+    
+    /**
      * Organize the spider to keep the shape
      */
     private void organize(){

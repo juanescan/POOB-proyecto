@@ -16,6 +16,7 @@ public class Strand
     private boolean isVisible;
     private int radius;
     private int strands;
+    private lines strand;
 
     /**
      * Constructor for objects of class Strand
@@ -41,24 +42,16 @@ public class Strand
         this.radius = radius;
         centerX = 400;
         centerY = 400;
+        strand = new lines(centerX,centerY,x,y);
     }
     
     private void draw(){
-        lines line = new lines(centerX,centerY,x,y);
-        line.makeVisible();
-    }
-    
-    /**
-     * Borra la representación visual del Strand.
-     */
-    private void erase() {
-        lines line = new lines(centerX, centerY, x, y);
-        line.makeInvisible();   
+        strand.makeVisible();
     }
     
     public void makeInvisible(){
+        strand.makeInvisible();
         isVisible = false;
-        erase();
     }
     
     public void makeVisible(){
