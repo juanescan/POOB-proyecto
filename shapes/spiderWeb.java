@@ -1,6 +1,7 @@
 import java.lang.Math;
 import java.util.*;
 import java.util.ArrayList;
+import javax.swing.JFrame;
 
 /**
  * SpiderWeb.
@@ -24,6 +25,8 @@ public class spiderWeb
     private Spider spider;
     private int strand;
     private Map<String,Integer> colorAndStrand;
+    private Canvas lienzo;
+    private boolean okay;
     
     /**
      * Constructor for objects of class spiderWeb
@@ -32,6 +35,7 @@ public class spiderWeb
      */
     public spiderWeb(int strands,int radius)
     {
+        lienzo = Canvas.getCanvas();
         this.strands = strands;
         this.radius = radius;
         x = 50;
@@ -44,8 +48,8 @@ public class spiderWeb
         int count = 0;
         bridges = new HashMap<>();
         colorAndStrand = new HashMap<>();
+        okay = true;
     }
-    
     //draw the spiderweb
     private void draw(){
         double radiansBetween = 2*Math.PI/strands;
@@ -57,8 +61,8 @@ public class spiderWeb
             strandsAndCoordenates.put(i + 1, strand);
             strand.makeVisible();
             currentAngle += radiansBetween;
-
         }
+        okay = true;
     }
     
     /**
@@ -69,13 +73,18 @@ public class spiderWeb
      */
     public void addBridge(String color, int distance, int firstStrand){
         if (distance <= 0 || distance > radius) {
-        throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
+            okay = false;
+            throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
+        }else if(bridges.containsKey(color)){
+            System.out.println("El color" + color + "ya existe, seleccione otro color");
+            okay = false;
         }
         if(firstStrand<strands){
             Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
             bridge.makeVisible();
             bridges.put(color,bridge);
             colorAndStrand.put(color,firstStrand);
+            okay = true;
         }
         else if(firstStrand == strands){
             Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
@@ -83,6 +92,7 @@ public class spiderWeb
             bridge.makeVisible();
             bridges.put(color,bridge);
             colorAndStrand.put(color,firstStrand);
+            okay = true;
         }
     }
     
@@ -97,6 +107,7 @@ public class spiderWeb
             delBridge(color);
             int saveStrand = colorAndStrand.get(color);
             addBridge(color,distance,saveStrand);
+            okay = true;
         }
     }
     
@@ -108,7 +119,8 @@ public class spiderWeb
         Bridge bridge = bridges.get(color);
         if (bridge.getColor().equals(color)) {
             bridge.makeInvisible(); 
-            bridges.remove(color); 
+            bridges.remove(color);
+            okay = true;
         }
     }
 
@@ -121,9 +133,15 @@ public class spiderWeb
         int size = (int)(radius/4);
         int xPos = findCoordenateX(radius,strand)-radius/8;
         int yPos = findCoordenateY(radius,strand)- radius/8;
-        Spot spot = new Spot(size,xPos,yPos,color);
-        spot.makeVisible();
-        spots.put(color,spot);
+        if(spots.containsKey(color)){
+            System.out.println("El color" + color + "ya existe, seleccione otro color");
+            okay = false;
+        }
+        else{Spot spot = new Spot(size,xPos,yPos,color);
+            spot.makeVisible();
+            spots.put(color,spot);
+            okay = true;
+        }
     }
     
     /**
@@ -131,13 +149,12 @@ public class spiderWeb
      * @param color is to select which spot remove
      */
     public void delSpot(String color) {
-         
         Spot spot = spots.get(color);
         if (spot.getColor().equals(color)) {
             spot.makeInvisible(); 
-            spots.remove(color); 
+            spots.remove(color);
+            okay = true;
         }
-            
     }
 
     /**
@@ -151,7 +168,7 @@ public class spiderWeb
         }
         spider.makeVisible();
         spider.moveToCoordenates(centerX-radius/9,centerY-radius/6);   
-
+        okay = true;
     }
     
     /**
@@ -166,6 +183,7 @@ public class spiderWeb
         }else if(advance == false ){ 
             spider.moveSlowlyToCoordenates(centerX-radius/9,centerY-radius/6,8);
         }
+        okay = true;
     }
   
     /**
@@ -183,6 +201,10 @@ public class spiderWeb
         for(Strand strand: strandsAndCoordenates.values()){
             strand.makeVisible();
         }
+        if(spider != null ){
+            spider.makeVisible();
+        }
+        okay = true;
     }
     
     /**
@@ -198,7 +220,10 @@ public class spiderWeb
         for(Strand strand: strandsAndCoordenates.values()){
             strand.makeInvisible();
         }
-        spider.makeInvisible();
+        if(spider != null ){
+            spider.makeInvisible();
+        }
+        okay = true;
     }
     
     /**
@@ -228,6 +253,7 @@ public class spiderWeb
         if (punto != null) {
             return punto.getX();
         } else {
+            okay = false;
             throw new IllegalArgumentException("El indice " + index + " no existe en el mapa");
         }
     }
@@ -241,6 +267,7 @@ public class spiderWeb
         if (punto != null){
             return punto.getY();
         } else{
+            okay = false;
             throw new IllegalArgumentException("El indice " + index + " no existe en el mapa");
         }
     }
@@ -254,6 +281,7 @@ public class spiderWeb
         if(punto != null){
             return punto.getCurrentAngle();
         } else{
+            okay = false;
             throw new IllegalArgumentException("El indice " + index + " no existe en el mapa");
         }
     }
@@ -277,15 +305,7 @@ public class spiderWeb
         int y2 = (int)(centerY + distance * Math.sin(getAngleByIndex(firstStrand)));
         return y2;
     }
-      
-    /**
-     * Return the HashMap linesAndCoordenates
-     */
-    private Map<Integer, Strand> getStrandsAndCoordenates() {
-        return strandsAndCoordenates;
-    }
     
-  
     /**
      * Add one strand to the SpiderWeb
      */
@@ -308,13 +328,47 @@ public class spiderWeb
 
     public ArrayList<Integer> bridge(String color) {
         ArrayList<Integer> bridgeCounts = new ArrayList<>();
-        for (Bridge bridge : bridges.values()) {
+        for(Bridge bridge : bridges.values()) {
             if (bridge.getColor().equals(color)) {
                 bridgeCounts.add(1); 
             }
         }
         return bridgeCounts;
     }
-
+    
+    public ArrayList<Integer> spot(String color){
+        ArrayList<Integer> spotCounts = new ArrayList<>();
+        for(Spot spot:spots.values()){
+            if(spot.getColor().equals(color)){
+                spotCounts.add(1);
+            }
+        }
+        return spotCounts;
+    }
+    
+    public ArrayList<String> bridges(){
+        ArrayList<String> bridgesList = new ArrayList<>();
+        for(String color: bridges.keySet()){
+            bridgesList.add(color);
+        }
+        return bridgesList;
+    }
+    
+    public ArrayList<String> spots(){
+        ArrayList<String> spotsList = new ArrayList<>();
+        for(String color: spots.keySet()){
+            spotsList.add(color);
+        }
+        return spotsList;
+    }
+    
+    public void finish() {
+        JFrame marco = lienzo.getFrame();
+        marco.dispose();
+    }
+    
+    public boolean ok(){
+        return okay;
+    }
 }
 

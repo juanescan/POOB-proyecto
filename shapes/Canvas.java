@@ -201,4 +201,7 @@ public class Canvas{
         }
     }
 
+    public JFrame getFrame(){
+        return frame;
+    }
 }
