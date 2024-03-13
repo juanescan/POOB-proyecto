@@ -74,6 +74,9 @@ public class lines
         isVisible = false;
     }
     
+    /**
+     * erase the line in the canvas 
+     */
     private void erase(){
         if(isVisible) {
             Canvas canvas = Canvas.getCanvas();
@@ -81,6 +84,9 @@ public class lines
         }
     }
     
+    /**
+     * get the color of the line
+     */
     public String getColor(){
         return color;
     }

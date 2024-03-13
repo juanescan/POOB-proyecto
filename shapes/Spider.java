@@ -82,6 +82,7 @@ public class Spider
     
     /**
      * Move the spider to a specific coordenate
+     * @param x and y are the coordenate
      */
     public void moveToCoordenates(int x, int y) {
         int dx = x - Head.getXPosition();
@@ -98,7 +99,9 @@ public class Spider
     }
     
     /**
-     * Move the spider slow
+     * Move the spider slow to a specific position
+     * @param targetX and targetY are the coordenate
+     * @speed how fast you want it to go
      */
     public void moveSlowlyToCoordenates(int targetX, int targetY, int speed) {
         int currentX = Head.getXPosition();

@@ -49,11 +49,17 @@ public class Strand
         strand.makeVisible();
     }
     
+    /**
+     * Make invisible the strand 
+     */
     public void makeInvisible(){
         strand.makeInvisible();
         isVisible = false;
     }
     
+    /**
+     * Make visible the strand 
+     */
     public void makeVisible(){
         isVisible = true;
         draw();

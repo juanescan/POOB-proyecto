@@ -25,7 +25,6 @@ public class spiderWeb
     private Spider spider;
     private int strand;
     private Map<String,Integer> colorAndStrand;
-    private Canvas lienzo;
     private boolean okay;
     
     /**
@@ -35,7 +34,6 @@ public class spiderWeb
      */
     public spiderWeb(int strands,int radius)
     {
-        lienzo = Canvas.getCanvas();
         this.strands = strands;
         this.radius = radius;
         x = 50;
@@ -74,13 +72,14 @@ public class spiderWeb
     public void addBridge(String color, int distance, int firstStrand){
         if (distance <= 0 || distance > radius) {
             okay = false;
-            throw new IllegalArgumentException("La distancia debe ser positiva y no debe ser mayor al radio");
+            System.out.println("La distancia debe ser positiva y no debe ser mayor al radio");
         }else if(bridges.containsKey(color)){
             System.out.println("El color" + color + "ya existe, seleccione otro color");
             okay = false;
         }
         if(firstStrand<strands){
-            Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
+            Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
+            findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
             bridge.makeVisible();
             bridges.put(color,bridge);
             colorAndStrand.put(color,firstStrand);
@@ -163,6 +162,10 @@ public class spiderWeb
      */
     public void spiderSit(int strand) {
         this.strand = strand;
+        if(strand > strands){
+            okay = false;
+            System.out.println("El strand indicado no existe");
+        }
         if(spider == null){
             spider = new Spider(radius-(radius/5),centerX-radius/9,centerY-radius/6);
         }
@@ -313,19 +316,25 @@ public class spiderWeb
         eliminate();
         strands += 1;
         draw();
+        okay = true;
     }
     
     /**
      * Enlarge the SpiderWeb
-     * @param
+     * @param percentage is many the spiderweb going to enlarge
      */
     public void enlarge(int percentage){
         eliminate();
+        okay = true;
         double multi = 1 + (percentage/100);
         radius = (int) (radius * multi);
         draw();
     }
 
+    /**
+     * Count many bridges exist with a specific color
+     * @return the number of bridges of this color in the integer list
+     */
     public ArrayList<Integer> bridge(String color) {
         ArrayList<Integer> bridgeCounts = new ArrayList<>();
         for(Bridge bridge : bridges.values()) {
@@ -333,9 +342,14 @@ public class spiderWeb
                 bridgeCounts.add(1); 
             }
         }
+        okay = true;
         return bridgeCounts;
     }
     
+    /**
+     * Count many spots exist with a specific color
+     * @return the number of bridges of this color in the integer list
+     */
     public ArrayList<Integer> spot(String color){
         ArrayList<Integer> spotCounts = new ArrayList<>();
         for(Spot spot:spots.values()){
@@ -343,30 +357,47 @@ public class spiderWeb
                 spotCounts.add(1);
             }
         }
+        okay = true;
         return spotCounts;
     }
     
+    /**
+     * Arraylist with the color of the bridges in the spiderweb
+     * @return arraylist with the color of the bridges
+     */
     public ArrayList<String> bridges(){
         ArrayList<String> bridgesList = new ArrayList<>();
         for(String color: bridges.keySet()){
             bridgesList.add(color);
         }
+        okay = true;
         return bridgesList;
     }
     
+    /**
+     * Arraylist with the color of the spots in the spiderweb
+     * @return arraylist with the color of the spots
+     */
     public ArrayList<String> spots(){
         ArrayList<String> spotsList = new ArrayList<>();
         for(String color: spots.keySet()){
             spotsList.add(color);
         }
+        okay = true;
         return spotsList;
     }
     
+    /**
+     * Finish the simulator 
+     */
     public void finish() {
-        JFrame marco = lienzo.getFrame();
-        marco.dispose();
+        System.exit(1);
     }
     
+    /**
+     * Check if the last action was succesfull
+     * @return boolean, true if the action was succesfull or false if not succesfull
+     */
     public boolean ok(){
         return okay;
     }

@@ -20,16 +20,26 @@ public class Spot
         isVisible = false;
     }
 
+    /**
+     * Make visible the spot
+     */
     public void makeVisible(){
         spot.makeVisible();
         isVisible = true;
     }
     
+    /**
+     * Make invisible the spot
+     */
     public void makeInvisible(){
         spot.makeInvisible();
         isVisible = false;
     }
     
+    /**
+     * Get the color of the spot
+     * @return color
+     */
     public String getColor(){
         return spot.getColor();
     }
