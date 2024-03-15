@@ -26,6 +26,7 @@ public class spiderWeb
     private int strand;
     private Map<String,Integer> colorAndStrand;
     private boolean okay;
+    private List<Integer> spiderMovements;
     
     /**
      * Constructor for objects of class spiderWeb
@@ -47,6 +48,7 @@ public class spiderWeb
         bridges = new HashMap<>();
         colorAndStrand = new HashMap<>();
         okay = true;
+        spiderMovements = new ArrayList<>();
     }
     //draw the spiderweb
     private void draw(){
@@ -183,6 +185,7 @@ public class spiderWeb
             int xPos = findCoordenateX(radius,strand)-radius/8;
             int yPos = findCoordenateY(radius,strand)- radius/8;
             spider.moveSlowlyToCoordenates(xPos,yPos,8);
+            spiderMovements.add(strand);
         }else if(advance == false ){ 
             spider.moveSlowlyToCoordenates(centerX-radius/9,centerY-radius/6,8);
         }
@@ -401,5 +404,9 @@ public class spiderWeb
     public boolean ok(){
         return okay;
     }
-}
+    
+    public List<Integer> spiderLastPath() {
+        return spiderMovements;
 
+    }
+}

@@ -29,6 +29,13 @@ public class lines
         isVisible = false;
         color = "black";
     }
+    
+     public boolean isOnLine(int x, int y) {
+       
+        int crossProduct = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1);
+        
+        return Math.abs(crossProduct) < 1;
+    }
 
     /**
      * Constructor for objects of class lines (use to create bridges)
@@ -90,5 +97,52 @@ public class lines
     public String getColor(){
         return color;
     }
+    
+    public int getEndY(int startX, int startY) {
+        if (startX == x1 && startY == y1) {
+        return y2;
+        } 
+    
+        else if (startX == x2 && startY == y2) {
+        return y1;
+        } 
+   
+        else if (startX == x1 && startY == y2) {
+        return y1;
+        } 
+    
+        else if (startX == x2 && startY == y1) {
+        return y2;
+        } 
+
+        else {
+        return -1; 
+        }
+    }
+    
+    public int getEndX(int startX, int startY) {
+        if (startX == x1 && startY == y1) {
+        return x2;
+        } 
+    
+        else if (startX == x2 && startY == y2) {
+        return x1;
+        } 
+   
+        else if (startX == x1 && startY == y2) {
+        return x1;
+        } 
+    
+        else if (startX == x2 && startY == y1) {
+        return x2;
+        } 
+
+        else {
+        return -1; 
+        }
+    }
+
+    
+
     
 }

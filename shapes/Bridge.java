@@ -24,6 +24,10 @@ public class Bridge
         isVisible = false;
     }
     
+    public boolean isOnBridge(int x, int y) {
+        return bridge.isOnLine(x, y);
+    }
+    
     /**
      * Make visible the spiderweb
      */
@@ -46,4 +50,12 @@ public class Bridge
     public String getColor(){
         return bridge.getColor();
     }
+    
+    public int getEndX(int startX,int startY) {
+        return bridge.getEndX(startX,startY);
+    }   
+    
+    public int getEndY(int startX,int startY) {
+        return bridge.getEndX(startX,startY);
+    } 
 }

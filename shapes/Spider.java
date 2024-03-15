@@ -118,6 +118,14 @@ public class Spider
             moveToCoordenates((int) currentX, (int) currentY);
         }
     }
+    
+    public int getX() {
+        return Head.getXPosition();
+    }  
+    
+    public int getY() {
+    return Head.getYPosition();
+    }
 
     
     
