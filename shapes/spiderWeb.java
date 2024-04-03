@@ -55,8 +55,8 @@ public class spiderWeb
         double radiansBetween = 2*Math.PI/strands;
         double currentAngle = 0;
         for(int i=0;i < strands;i++){
-            x = (int)(centerX + radius * Math.cos(currentAngle));
-            y = (int)(centerY + radius * Math.sin(currentAngle));
+            calculateX(currentAngle);
+            calculateY(currentAngle);
             Strand strand = new Strand(x,y,currentAngle,strands,radius);
             strandsAndCoordenates.put(i + 1, strand);
             strand.makeVisible();
@@ -80,20 +80,10 @@ public class spiderWeb
             okay = false;
         }
         if(firstStrand<strands){
-            Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
-            findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color);
-            bridge.makeVisible();
-            bridges.put(color,bridge);
-            colorAndStrand.put(color,firstStrand);
-            okay = true;
+            createBridgeCase1(color,distance,firstStrand);
         }
         else if(firstStrand == strands){
-            Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color);
-            bridge.makeVisible();
-            bridges.put(color,bridge);
-            colorAndStrand.put(color,firstStrand);
-            okay = true;
+            createBridgeCase2(color,distance,firstStrand);
         }
     }
     
@@ -132,8 +122,8 @@ public class spiderWeb
      */
     public void addSpot(String color,int strand){
         int size = (int)(radius/4);
-        int xPos = findCoordenateX(radius,strand)-radius/8;
-        int yPos = findCoordenateY(radius,strand)- radius/8;
+        int xPos = findCoordenateX(radius,strand);
+        int yPos = findCoordenateY(radius,strand);
         if(spots.containsKey(color)){
             System.out.println("El color" + color + "ya existe, seleccione otro color");
             okay = false;
@@ -169,10 +159,10 @@ public class spiderWeb
             System.out.println("El strand indicado no existe");
         }
         if(spider == null){
-            spider = new Spider(radius-(radius/5),centerX-radius/9,centerY-radius/6);
+            spider = new Spider(radius-(radius/5),centerX,centerY);
         }
         spider.makeVisible();
-        spider.moveToCoordenates(centerX-radius/9,centerY-radius/6);   
+        spider.move(centerX,centerY);   
         okay = true;
     }
     
@@ -181,17 +171,29 @@ public class spiderWeb
      * @advance is to determinate if the spider advance through the SpiderWeb or if retrocedate in some cases
      */
     public void spiderWalk(boolean advance){
-        if (advance == true){
-            int xPos = findCoordenateX(radius,strand)-radius/8;
-            int yPos = findCoordenateY(radius,strand)- radius/8;
-            spider.moveSlowlyToCoordenates(xPos,yPos,8);
-            spiderMovements.add(strand);
-        }else if(advance == false ){ 
-            spider.moveSlowlyToCoordenates(centerX-radius/9,centerY-radius/6,8);
+        if(advance){
+            String bridgeColor = bridgeColorToMove(strand);
+            int dirToMove = bridgeDir(strand);
+            if(bridgeColor!= null && strand<strands){
+                Bridge bridge = bridges.get(bridgeColor);
+                spider.move(bridge.getStartX(),bridge.getStartY());
+                spider.move(bridge.getEndX(),bridge.getEndY());
+                strand ++;
+            }else if(bridgeColor!= null && strand == strands){
+                Bridge bridge = bridges.get(bridgeColor);
+                spider.move(bridge.getStartX(),bridge.getStartY());
+                spider.move(bridge.getEndX(),bridge.getEndY());
+                strand = 1;
+            }else if(bridgeColor == null){
+                int xPos = findCoordenateX(radius,strand);
+                int yPos = findCoordenateY(radius,strand);
+                spider.move(xPos,yPos);
+                spiderMovements.add(strand);
+            }
         }
         okay = true;
     }
-  
+    
     /**
      * Make visible the spiderweb
      */
@@ -230,6 +232,15 @@ public class spiderWeb
             spider.makeInvisible();
         }
         okay = true;
+    }
+    
+    /**
+     * Return in a Arraylist the spots which are reachable to the spider
+     */
+    public ArrayList<String> reachablesSpots(){
+        ArrayList<String> reachables = new ArrayList<>();
+        
+        return reachables;
     }
     
     /**
@@ -408,5 +419,98 @@ public class spiderWeb
     public List<Integer> spiderLastPath() {
         return spiderMovements;
 
+    }
+    
+    /**
+     * Return bridge when firstStrand < strands
+     */
+    private void createBridgeCase1(String color,int distance ,int firstStrand){
+        Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
+            findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color, firstStrand, firstStrand + 1);
+        bridge.makeVisible();
+        bridges.put(color,bridge);
+        colorAndStrand.put(color,firstStrand);
+        okay = true;
+        
+    }
+    
+    /**
+     * Return bridge when firstStrand = strands
+     */
+    private void createBridgeCase2(String color,int distance, int firstStrand){
+        Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
+                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color,firstStrand,1);
+            bridge.makeVisible();
+            bridges.put(color,bridge);
+            colorAndStrand.put(color,firstStrand);
+            okay = true;
+    }
+    
+    /**
+     * Calculate X
+     */
+    private int calculateX(double currentAngle){
+        x = (int)(centerX + radius * Math.cos(currentAngle));
+        return x;
+    }
+    
+    /**
+     * Calculate Y
+     */
+    private int calculateY(double currentAngle){
+        y = (int)(centerY + radius * Math.sin(currentAngle));
+        return y;
+    }
+    
+    /**
+     * Check if the specific strand have bridges 
+     * @return the color of the bridge
+     */
+    public String bridgeColorToMove(int strand){
+        double shortDistance = Double.MAX_VALUE;
+        int bridgeStrand = -1;
+        String color = null;
+        double spiderDistance = spider.distanceToAnyObject(centerX,centerY);
+        for(Bridge bridge : bridges.values()){
+            int actualStrandStart = bridge.getStrandBridgeStart();
+            int actualStrandEnd = bridge.getStrandBridgeEnd();
+            double distance = 0;
+            if(actualStrandStart == strand){
+                distance = Math.sqrt(Math.pow(centerX - bridge.getStartX() , 2) + Math.pow(centerY - bridge.getStartY() , 2));
+            }else if(actualStrandEnd == strand){
+                distance = Math.sqrt(Math.pow(centerX - bridge.getEndX() , 2) + Math.pow(centerY - bridge.getEndY() , 2));
+            }
+            if(distance < shortDistance && distance > spiderDistance){
+                shortDistance = distance;
+                color = bridge.getColor();
+            }
+        }
+        return color;
+    }
+    
+    public Integer bridgeDir(int strand){
+        double shortDistance = Double.MAX_VALUE;
+        int bridgeStrand = -1;
+        int dir = -1;
+        double spiderDistance = spider.distanceToAnyObject(centerX,centerY);
+        for(Bridge bridge : bridges.values()){
+            int actualStrandStart = bridge.getStrandBridgeStart();
+            int actualStrandEnd = bridge.getStrandBridgeEnd();
+            double distance = 0;
+            if(actualStrandStart == strand){
+                distance = Math.sqrt(Math.pow(centerX - bridge.getStartX() , 2) + Math.pow(centerY - bridge.getStartY() , 2));
+                if(distance < shortDistance && distance > spiderDistance){
+                shortDistance = distance;
+                dir = 1;
+                }
+            }else if(actualStrandEnd == strand){
+                distance = Math.sqrt(Math.pow(centerX - bridge.getEndX() , 2) + Math.pow(centerY - bridge.getEndY() , 2));
+                if(distance < shortDistance && distance > spiderDistance){
+                shortDistance = distance;
+                dir = 2;
+                }
+            }
+        }
+        return dir;
     }
 }

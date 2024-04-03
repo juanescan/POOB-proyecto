@@ -9,6 +9,13 @@ public class Bridge
 {
     private lines bridge;
     private boolean isVisible;
+    private int x1;
+    private int y1;
+    private int x2;
+    private int y2;
+    private int strandBridgeStart;
+     private int strandBridgeEnd;
+
     
     /**
      * Constructor for objects of class Bridge
@@ -18,10 +25,16 @@ public class Bridge
      * @param y1 the y part of the seconf Coordenate of the bridge
      * @param color of the bridge
      */
-    public Bridge(int x1, int y1, int x2, int y2, String color)
+    public Bridge(int x1, int y1, int x2, int y2, String color, int strand, int secondStrand)
     {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
         bridge = new lines(x1,y1,x2,y2,color);
         isVisible = false;
+        strandBridgeStart = strand;
+        strandBridgeEnd = secondStrand;
     }
     
     public boolean isOnBridge(int x, int y) {
@@ -58,4 +71,28 @@ public class Bridge
     public int getEndY(int startX,int startY) {
         return bridge.getEndX(startX,startY);
     } 
+    
+    public int getStartX(){
+        return x1;
+    }
+    
+    public int getStartY(){
+        return y1;
+    }
+    
+    public int getEndX(){
+        return x2;
+    }
+    
+    public int getEndY(){
+        return y2;
+    }
+    
+    public int getStrandBridgeStart(){
+        return strandBridgeStart;
+    }
+    
+    public int getStrandBridgeEnd(){
+        return strandBridgeEnd;
+    }
 }

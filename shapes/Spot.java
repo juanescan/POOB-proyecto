@@ -43,4 +43,5 @@ public class Spot
     public String getColor(){
         return spot.getColor();
     }
+    
 }

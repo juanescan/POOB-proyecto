@@ -49,7 +49,7 @@ public class Rectangle{
         draw();
     }
     
-    public void moveToCoordinates(int x, int y) {
+    public void moveToCoordenates(int x, int y) {
         erase();
         xPosition = x;
         yPosition = y;

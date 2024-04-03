@@ -18,6 +18,7 @@ public class Spider
     private Rectangle leg6;
     private String color;
     private boolean isVisible;
+    private spiderWeb spiderWeb;
     
 
     /**
@@ -126,7 +127,24 @@ public class Spider
     public int getY() {
     return Head.getYPosition();
     }
-
+    
+    public double distanceToAnyObject(int x, int y){
+        double distance = Math.sqrt(Math.pow(getX() - x , 2) + Math.pow(getY() - y , 2));
+        return distance;
+    }
+    
+    public void move(int x, int y) {
+    
+        Head.moveToCoordenates(x, y);
+        Body.moveToCoordenates(x, y);
+        leg1.moveToCoordenates(x, y);
+        leg2.moveToCoordenates(x, y);
+        leg3.moveToCoordenates(x, y);
+        leg4.moveToCoordenates(x, y);
+        leg5.moveToCoordenates(x, y);
+        leg6.moveToCoordenates(x, y);
+        organize();
+    }
     
     
 
