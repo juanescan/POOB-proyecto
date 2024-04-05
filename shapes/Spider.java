@@ -99,27 +99,6 @@ public class Spider
         leg6.moveTo(dx, dy);
     }
     
-    /**
-     * Move the spider slow to a specific position
-     * @param targetX and targetY are the coordenate
-     * @speed how fast you want it to go
-     */
-    public void moveSlowlyToCoordenates(int targetX, int targetY, int speed) {
-        int currentX = Head.getXPosition();
-        int currentY = Head.getYPosition();
-        int dx = targetX - currentX;
-        int dy = targetY - currentY;
-        double distance = Math.sqrt(dx * dx + dy * dy); 
-        int steps = (int) (distance / speed);
-        double stepX = dx / (double) steps;
-        double stepY = dy / (double) steps;
-        for (int i = 0; i < steps; i++) {
-            currentX += stepX;
-            currentY += stepY;
-            moveToCoordenates((int) currentX, (int) currentY);
-        }
-    }
-    
     public int getX() {
         return Head.getXPosition();
     }  
@@ -146,6 +125,16 @@ public class Spider
         organize();
     }
     
-    
+        /**
+     * Determinate if the spider is in a certain position
+     */
+    public boolean spiderInAPosition(int xPos, int yPos){
+        boolean res = false;
+        if(getX() == xPos && getY() == yPos){
+            res = true;
+            return res;
+        }
+        return res;
+    }
 
 }

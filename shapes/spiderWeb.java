@@ -27,6 +27,7 @@ public class spiderWeb
     private Map<String,Integer> colorAndStrand;
     private boolean okay;
     private List<Integer> spiderMovements;
+    private int countBridges;
     
     /**
      * Constructor for objects of class spiderWeb
@@ -49,14 +50,15 @@ public class spiderWeb
         colorAndStrand = new HashMap<>();
         okay = true;
         spiderMovements = new ArrayList<>();
+        countBridges = 1;
     }
     //draw the spiderweb
     private void draw(){
         double radiansBetween = 2*Math.PI/strands;
         double currentAngle = 0;
         for(int i=0;i < strands;i++){
-            calculateX(currentAngle);
-            calculateY(currentAngle);
+            x = calculateX(currentAngle);
+            y = calculateY(currentAngle);
             Strand strand = new Strand(x,y,currentAngle,strands,radius);
             strandsAndCoordenates.put(i + 1, strand);
             strand.makeVisible();
@@ -81,9 +83,11 @@ public class spiderWeb
         }
         if(firstStrand<strands){
             createBridgeCase1(color,distance,firstStrand);
+            countBridges++;
         }
         else if(firstStrand == strands){
             createBridgeCase2(color,distance,firstStrand);
+            countBridges++;
         }
     }
     
@@ -171,27 +175,18 @@ public class spiderWeb
      * @advance is to determinate if the spider advance through the SpiderWeb or if retrocedate in some cases
      */
     public void spiderWalk(boolean advance){
-        if(advance){
-            String bridgeColor = bridgeColorToMove(strand);
-            int dirToMove = bridgeDir(strand);
-            if(bridgeColor!= null && strand<strands){
-                Bridge bridge = bridges.get(bridgeColor);
-                spider.move(bridge.getStartX(),bridge.getStartY());
-                spider.move(bridge.getEndX(),bridge.getEndY());
-                strand ++;
-            }else if(bridgeColor!= null && strand == strands){
-                Bridge bridge = bridges.get(bridgeColor);
-                spider.move(bridge.getStartX(),bridge.getStartY());
-                spider.move(bridge.getEndX(),bridge.getEndY());
-                strand = 1;
-            }else if(bridgeColor == null){
-                int xPos = findCoordenateX(radius,strand);
-                int yPos = findCoordenateY(radius,strand);
-                spider.move(xPos,yPos);
-                spiderMovements.add(strand);
+        String bridgeColor = bridgeColorToMove(strand);
+        int dirToMove = bridgeDir(strand);
+        Bridge brid = bridges.get(bridgeColor);
+        Strand stra = strandsAndCoordenates.get(strand);
+        for(int i = 0; i < countBridges; i++){
+    
+            if(advance && !spider.spiderInAPosition(stra.getX(),stra.getY())){
+                spiderWalkTrue();
+            }else if(!advance && !spider.spiderInAPosition(centerX,centerY)){
+                spiderWalkFalse();
             }
         }
-        okay = true;
     }
     
     /**
@@ -440,10 +435,10 @@ public class spiderWeb
     private void createBridgeCase2(String color,int distance, int firstStrand){
         Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
                         ,findCoordenateX(distance,1),findCoordenateY(distance,1),color,firstStrand,1);
-            bridge.makeVisible();
-            bridges.put(color,bridge);
-            colorAndStrand.put(color,firstStrand);
-            okay = true;
+        bridge.makeVisible();
+        bridges.put(color,bridge);
+        colorAndStrand.put(color,firstStrand);
+        okay = true;
     }
     
     /**
@@ -480,7 +475,7 @@ public class spiderWeb
             }else if(actualStrandEnd == strand){
                 distance = Math.sqrt(Math.pow(centerX - bridge.getEndX() , 2) + Math.pow(centerY - bridge.getEndY() , 2));
             }
-            if(distance < shortDistance && distance > spiderDistance){
+            if(distance < shortDistance && distance > spiderDistance + 1){
                 shortDistance = distance;
                 color = bridge.getColor();
             }
@@ -512,5 +507,152 @@ public class spiderWeb
             }
         }
         return dir;
+    }
+    
+    /**
+     * Spider Move in the bridge in the case that strand < strands
+     */
+    private void spiderWalkCase1(String color, int dir){
+        Bridge bridge = bridges.get(color);
+        if(dir == 1){
+            spider.move(bridge.getStartX(),bridge.getStartY());
+            spider.move(bridge.getEndX(),bridge.getEndY());
+            strand ++;
+        }else if(dir == 2 ){
+            spider.move(bridge.getEndX(),bridge.getEndY());
+            spider.move(bridge.getStartX(),bridge.getStartY());
+            strand --;
+        }
+    }
+    
+    /**
+     * Spider move in the bridge in the case that strand == strands
+     */
+    private void spiderWalkCase2(String color, int dir){
+        Bridge bridge = bridges.get(color);
+        if(dir == 1){
+            spider.move(bridge.getStartX(),bridge.getStartY());
+            spider.move(bridge.getEndX(),bridge.getEndY());
+            strand = 1;
+        }else if(dir == 2 ){
+            spider.move(bridge.getEndX(),bridge.getEndY());
+            spider.move(bridge.getStartX(),bridge.getStartY());
+            strand --;
+        }
+    }
+    
+    /**
+     * Spider move in the bridge in the case that not have valid bridges
+     */
+    private void spiderWalkCase3(String color, int dir){
+        int xPos = findCoordenateX(radius,strand);
+        int yPos = findCoordenateY(radius,strand);
+        spider.move(xPos,yPos);
+        spiderMovements.add(strand);
+    }
+    
+    /**
+     * Spider move in the bridge in the case that strand == 1
+     */
+    private void spiderWalkCase4(String color, int dir){
+        Bridge bridge = bridges.get(color);
+        if(dir == 1){
+            spider.move(bridge.getStartX(),bridge.getStartY());
+            spider.move(bridge.getEndX(),bridge.getEndY());
+            strand ++;
+        }else if(dir == 2 ){
+            spider.move(bridge.getEndX(),bridge.getEndY());
+            spider.move(bridge.getStartX(),bridge.getStartY());
+            strand = strands;
+        }
+    }
+    
+    /**
+     * Spider walk throught de spiderweb when the boolean is true
+     */
+    private void spiderWalkTrue(){
+        String bridgeColor = bridgeColorToMove(strand);
+        int dirToMove = bridgeDir(strand);
+        if(bridgeColor!= null && strand<strands && strand != 1){
+            spiderWalkCase1(bridgeColor,dirToMove);
+        }else if(bridgeColor!= null && strand == strands){
+            spiderWalkCase2(bridgeColor,dirToMove);
+        }else if(bridgeColor == null){
+            spiderWalkCase3(bridgeColor,dirToMove);
+        }else if (bridgeColor != null && strand == 1){
+            spiderWalkCase4(bridgeColor,dirToMove);
+        }
+        okay = true;
+    }
+    
+    private void spiderWalkFalse(){
+        String bridgeColor = bridgeColorToMoveFalse();
+        int dirToMove = bridgeDirFalse(strand);
+        if(bridgeColor!= null && strand<strands && strand != 1){
+            spiderWalkCase1(bridgeColor,dirToMove);
+        }else if(bridgeColor!= null && strand == strands){
+            spiderWalkCase2(bridgeColor,dirToMove);
+        }else if(bridgeColor == null){
+            spiderWalkCaseFalse(bridgeColor,dirToMove);
+        }else if (bridgeColor != null && strand == 1){
+            spiderWalkCase4(bridgeColor,dirToMove);
+        }
+        okay = true;
+    }
+    
+    private String bridgeColorToMoveFalse(){
+        double biggestDistance = Double.MIN_VALUE;
+        int bridgeStrand = -1;
+        String color = null;
+        double spiderDistance = spider.distanceToAnyObject(centerX,centerY);
+        for(Bridge bridge : bridges.values()){
+            int actualStrandStart = bridge.getStrandBridgeStart();
+            int actualStrandEnd = bridge.getStrandBridgeEnd();
+            double distance = 0;
+            if(actualStrandStart == strand){
+                distance = Math.sqrt(Math.pow(centerX - bridge.getStartX() , 2) + Math.pow(centerY - bridge.getStartY() , 2));
+            }else if(actualStrandEnd == strand){
+                distance = Math.sqrt(Math.pow(centerX - bridge.getEndX() , 2) + Math.pow(centerY - bridge.getEndY() , 2));
+            }
+            if(distance > biggestDistance && distance < spiderDistance){
+                biggestDistance = distance;
+                color = bridge.getColor();
+            }
+        }
+        return color;
+    }
+    
+    private int bridgeDirFalse(int strand){
+        double biggestDistance = Double.MIN_VALUE;
+        int bridgeStrand = -1;
+        int dir = -1;
+        double spiderDistance = spider.distanceToAnyObject(centerX,centerY);
+        for(Bridge bridge : bridges.values()){
+            int actualStrandStart = bridge.getStrandBridgeStart();
+            int actualStrandEnd = bridge.getStrandBridgeEnd();
+            double distance = 0;
+            if(actualStrandStart == strand){
+                distance = Math.sqrt(Math.pow(centerX - bridge.getStartX() , 2) + Math.pow(centerY - bridge.getStartY() , 2));
+                if(distance > biggestDistance && distance < spiderDistance){
+                biggestDistance = distance;
+                dir = 1;
+                }
+            }else if(actualStrandEnd == strand){
+                distance = Math.sqrt(Math.pow(centerX - bridge.getEndX() , 2) + Math.pow(centerY - bridge.getEndY() , 2));
+                if(distance > biggestDistance && distance < spiderDistance){
+                biggestDistance = distance;
+                dir = 2;
+                }
+            }
+        }
+        return dir;
+    }
+    
+        /**
+     * Spider move in the bridge in the case that not have valid bridges
+     */
+    private void spiderWalkCaseFalse(String color, int dir){
+        spider.move(centerX,centerY);
+        spiderMovements.add(strand);
     }
 }
