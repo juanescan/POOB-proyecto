@@ -1,3 +1,4 @@
+ 
 
 
 /**
@@ -125,7 +126,7 @@ public class Spider
         organize();
     }
     
-        /**
+    /**
      * Determinate if the spider is in a certain position
      */
     public boolean spiderInAPosition(int xPos, int yPos){
@@ -136,5 +137,7 @@ public class Spider
         }
         return res;
     }
+    
+
 
 }

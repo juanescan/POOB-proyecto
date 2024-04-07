@@ -1,7 +1,10 @@
+ 
+
 import java.lang.Math;
 import java.util.*;
 import java.util.ArrayList;
 import javax.swing.JFrame;
+
 
 /**
  * SpiderWeb.
@@ -16,18 +19,24 @@ public class spiderWeb
     private int y;
     private int centerX;
     private int centerY;
+    private int favorite;
     private boolean isVisible;
     private Map<Integer, Strand> strandsAndCoordenates;
     private int distance;
     private Map<String,Spot> spots;
     private int radius;
-    private Map<String, Bridge> bridges;
+    private Map<String, Bridge> bridgesByColor;
     private Spider spider;
     private int strand;
     private Map<String,Integer> colorAndStrand;
     private boolean okay;
     private List<Integer> spiderMovements;
     private int countBridges;
+    private Map<Integer, lines> spiderpaths;
+    private int index;
+    private Map<String, Bridge> unusedBridges;
+    private int[][] bridges;
+    private boolean isProblem;
     
     /**
      * Constructor for objects of class spiderWeb
@@ -46,13 +55,55 @@ public class spiderWeb
         strandsAndCoordenates = new HashMap<>();
         spots = new HashMap<>();
         int count = 0;
-        bridges = new HashMap<>();
+        bridgesByColor = new HashMap<>();
+        unusedBridges = new HashMap<>();
         colorAndStrand = new HashMap<>();
         okay = true;
         spiderMovements = new ArrayList<>();
         countBridges = 1;
+        spiderpaths = new HashMap<>();
+        index = 1;
+        isProblem = false;
+        makeVisible();
     }
-    //draw the spiderweb
+    
+    public spiderWeb(int strands, int favorite, int[][] bridges){
+        this.strands = strands;
+        this.favorite = favorite;
+        this.bridges = bridges;
+        radius = 120;
+        centerX = 400;
+        centerY = 400;
+        strandsAndCoordenates = new HashMap<>();
+        unusedBridges = new HashMap<>();
+        spots = new HashMap<>();
+        bridgesByColor = new HashMap<>();
+        colorAndStrand = new HashMap<>();
+        isProblem = true;
+        makeVisible();
+    }
+    
+    private void drawForProblem(){
+        double radiansBetween = 2*Math.PI/strands;
+        double currentAngle = 0;
+        for(int i=0;i < strands;i++){
+            x = calculateX(currentAngle);
+            y = calculateY(currentAngle);
+            Strand strand = new Strand(x,y,currentAngle,strands,radius);
+            strandsAndCoordenates.put(i + 1, strand);
+            strand.makeVisible();
+            currentAngle += radiansBetween;
+        }
+        int filas = bridges.length;
+        int columnas = bridges[0].length;
+        for(int i  = 0; i < filas ; i++ ){
+            int dist = bridges[i][0];
+            int fStrand = bridges[i][1];
+            addBridge("black",dist,fStrand);
+        }
+        okay = true;
+    }
+    
     private void draw(){
         double radiansBetween = 2*Math.PI/strands;
         double currentAngle = 0;
@@ -77,9 +128,6 @@ public class spiderWeb
         if (distance <= 0 || distance > radius) {
             okay = false;
             System.out.println("La distancia debe ser positiva y no debe ser mayor al radio");
-        }else if(bridges.containsKey(color)){
-            System.out.println("El color" + color + "ya existe, seleccione otro color");
-            okay = false;
         }
         if(firstStrand<strands){
             createBridgeCase1(color,distance,firstStrand);
@@ -97,8 +145,8 @@ public class spiderWeb
      * @param distance is the new distance to the center of the SpiderWeb
      */
     public void relocateBridge(String color, int distance){
-        if (bridges.containsKey(color)){
-            Bridge bridge = bridges.get(color);
+        if (bridgesByColor.containsKey(color)){
+            Bridge bridge = bridgesByColor.get(color);
             delBridge(color);
             int saveStrand = colorAndStrand.get(color);
             addBridge(color,distance,saveStrand);
@@ -111,10 +159,10 @@ public class spiderWeb
      * @param color is to select which color bridge we will remove
      */
     public void delBridge(String color) { 
-        Bridge bridge = bridges.get(color);
+        Bridge bridge = bridgesByColor.get(color);
         if (bridge.getColor().equals(color)) {
             bridge.makeInvisible(); 
-            bridges.remove(color);
+            bridgesByColor.remove(color);
             okay = true;
         }
     }
@@ -166,7 +214,8 @@ public class spiderWeb
             spider = new Spider(radius-(radius/5),centerX,centerY);
         }
         spider.makeVisible();
-        spider.move(centerX,centerY);   
+        spider.move(centerX,centerY); 
+        deletePath();
         okay = true;
     }
     
@@ -177,10 +226,9 @@ public class spiderWeb
     public void spiderWalk(boolean advance){
         String bridgeColor = bridgeColorToMove(strand);
         int dirToMove = bridgeDir(strand);
-        Bridge brid = bridges.get(bridgeColor);
+        Bridge brid = bridgesByColor.get(bridgeColor);
         Strand stra = strandsAndCoordenates.get(strand);
         for(int i = 0; i < countBridges; i++){
-    
             if(advance && !spider.spiderInAPosition(stra.getX(),stra.getY())){
                 spiderWalkTrue();
             }else if(!advance && !spider.spiderInAPosition(centerX,centerY)){
@@ -194,8 +242,11 @@ public class spiderWeb
      */
     public void makeVisible(){
         isVisible = true;
+        if(isProblem){
+            drawForProblem();
+        }else
         draw();
-        for(Bridge bridge: bridges.values()){
+        for(Bridge bridge: bridgesByColor.values()){
             bridge.makeVisible();
         }
         for(Spot spot: spots.values()){
@@ -214,7 +265,7 @@ public class spiderWeb
      * Make invisible SpiderWeb, bridges, spots, spider
      */
     public void makeInvisible(){
-        for(Bridge bridge: bridges.values()){
+        for(Bridge bridge: bridgesByColor.values()){
             bridge.makeInvisible();
         }
         for(Spot spot: spots.values()){
@@ -239,12 +290,24 @@ public class spiderWeb
     }
     
     /**
+     * Return the bridges that the spider dont use
+     */
+    public ArrayList<String> unusedBridges(){
+        ArrayList<String> unused = new ArrayList<>();
+        for (Map.Entry<String, Bridge> entry : unusedBridges.entrySet()) {
+            String key = entry.getKey();
+            unused.add(key);
+        }
+        return unused;
+    }
+    
+    /**
      * Eliminate SpiderWeb, bridges, spots
      */
     private void eliminate(){
-        for(Bridge bridge: bridges.values()){
+        for(Bridge bridge: bridgesByColor.values()){
             bridge.makeInvisible();
-            bridges.remove(bridge);
+            bridgesByColor.remove(bridge);
         }
         for(Spot spot: spots.values()){
             spot.makeInvisible();
@@ -346,7 +409,7 @@ public class spiderWeb
      */
     public ArrayList<Integer> bridge(String color) {
         ArrayList<Integer> bridgeCounts = new ArrayList<>();
-        for(Bridge bridge : bridges.values()) {
+        for(Bridge bridge : bridgesByColor.values()) {
             if (bridge.getColor().equals(color)) {
                 bridgeCounts.add(1); 
             }
@@ -376,7 +439,7 @@ public class spiderWeb
      */
     public ArrayList<String> bridges(){
         ArrayList<String> bridgesList = new ArrayList<>();
-        for(String color: bridges.keySet()){
+        for(String color: bridgesByColor.keySet()){
             bridgesList.add(color);
         }
         okay = true;
@@ -423,7 +486,8 @@ public class spiderWeb
         Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
             findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color, firstStrand, firstStrand + 1);
         bridge.makeVisible();
-        bridges.put(color,bridge);
+        bridgesByColor.put(color,bridge);
+        unusedBridges.put(color,bridge);
         colorAndStrand.put(color,firstStrand);
         okay = true;
         
@@ -436,10 +500,13 @@ public class spiderWeb
         Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
                         ,findCoordenateX(distance,1),findCoordenateY(distance,1),color,firstStrand,1);
         bridge.makeVisible();
-        bridges.put(color,bridge);
+        bridgesByColor.put(color,bridge);
+        unusedBridges.put(color,bridge);
         colorAndStrand.put(color,firstStrand);
         okay = true;
     }
+    
+    
     
     /**
      * Calculate X
@@ -466,7 +533,7 @@ public class spiderWeb
         int bridgeStrand = -1;
         String color = null;
         double spiderDistance = spider.distanceToAnyObject(centerX,centerY);
-        for(Bridge bridge : bridges.values()){
+        for(Bridge bridge : bridgesByColor.values()){
             int actualStrandStart = bridge.getStrandBridgeStart();
             int actualStrandEnd = bridge.getStrandBridgeEnd();
             double distance = 0;
@@ -488,7 +555,7 @@ public class spiderWeb
         int bridgeStrand = -1;
         int dir = -1;
         double spiderDistance = spider.distanceToAnyObject(centerX,centerY);
-        for(Bridge bridge : bridges.values()){
+        for(Bridge bridge : bridgesByColor.values()){
             int actualStrandStart = bridge.getStrandBridgeStart();
             int actualStrandEnd = bridge.getStrandBridgeEnd();
             double distance = 0;
@@ -513,13 +580,18 @@ public class spiderWeb
      * Spider Move in the bridge in the case that strand < strands
      */
     private void spiderWalkCase1(String color, int dir){
-        Bridge bridge = bridges.get(color);
+        Bridge bridge = bridgesByColor.get(color);
+        unusedBridges.remove(color);
         if(dir == 1){
+            createPath(spider.getX(), spider.getY(), bridge.getStartX(), bridge.getStartY());           
             spider.move(bridge.getStartX(),bridge.getStartY());
+            createPath(spider.getX(), spider.getY(),bridge.getEndX(),bridge.getEndY());
             spider.move(bridge.getEndX(),bridge.getEndY());
             strand ++;
         }else if(dir == 2 ){
+            createPath(spider.getX(), spider.getY(),bridge.getEndX(),bridge.getEndY());
             spider.move(bridge.getEndX(),bridge.getEndY());
+            createPath(spider.getX(), spider.getY(), bridge.getStartX(), bridge.getStartY());    
             spider.move(bridge.getStartX(),bridge.getStartY());
             strand --;
         }
@@ -529,13 +601,18 @@ public class spiderWeb
      * Spider move in the bridge in the case that strand == strands
      */
     private void spiderWalkCase2(String color, int dir){
-        Bridge bridge = bridges.get(color);
+        Bridge bridge = bridgesByColor.get(color);
+        unusedBridges.remove(color);
         if(dir == 1){
+            createPath(spider.getX(), spider.getY(), bridge.getStartX(), bridge.getStartY());           
             spider.move(bridge.getStartX(),bridge.getStartY());
+            createPath(spider.getX(), spider.getY(),bridge.getEndX(),bridge.getEndY());
             spider.move(bridge.getEndX(),bridge.getEndY());
             strand = 1;
         }else if(dir == 2 ){
+            createPath(spider.getX(), spider.getY(),bridge.getEndX(),bridge.getEndY());
             spider.move(bridge.getEndX(),bridge.getEndY());
+            createPath(spider.getX(), spider.getY(), bridge.getStartX(), bridge.getStartY());    
             spider.move(bridge.getStartX(),bridge.getStartY());
             strand --;
         }
@@ -547,6 +624,7 @@ public class spiderWeb
     private void spiderWalkCase3(String color, int dir){
         int xPos = findCoordenateX(radius,strand);
         int yPos = findCoordenateY(radius,strand);
+        createPath(spider.getX(), spider.getY(), xPos, yPos);
         spider.move(xPos,yPos);
         spiderMovements.add(strand);
     }
@@ -555,13 +633,18 @@ public class spiderWeb
      * Spider move in the bridge in the case that strand == 1
      */
     private void spiderWalkCase4(String color, int dir){
-        Bridge bridge = bridges.get(color);
+        Bridge bridge = bridgesByColor.get(color);
+        unusedBridges.remove(color);
         if(dir == 1){
+            createPath(spider.getX(), spider.getY(), bridge.getStartX(), bridge.getStartY());           
             spider.move(bridge.getStartX(),bridge.getStartY());
+            createPath(spider.getX(), spider.getY(),bridge.getEndX(),bridge.getEndY());
             spider.move(bridge.getEndX(),bridge.getEndY());
             strand ++;
         }else if(dir == 2 ){
+            createPath(spider.getX(), spider.getY(),bridge.getEndX(),bridge.getEndY());
             spider.move(bridge.getEndX(),bridge.getEndY());
+            createPath(spider.getX(), spider.getY(), bridge.getStartX(), bridge.getStartY());    
             spider.move(bridge.getStartX(),bridge.getStartY());
             strand = strands;
         }
@@ -605,7 +688,7 @@ public class spiderWeb
         int bridgeStrand = -1;
         String color = null;
         double spiderDistance = spider.distanceToAnyObject(centerX,centerY);
-        for(Bridge bridge : bridges.values()){
+        for(Bridge bridge : bridgesByColor.values()){
             int actualStrandStart = bridge.getStrandBridgeStart();
             int actualStrandEnd = bridge.getStrandBridgeEnd();
             double distance = 0;
@@ -627,7 +710,7 @@ public class spiderWeb
         int bridgeStrand = -1;
         int dir = -1;
         double spiderDistance = spider.distanceToAnyObject(centerX,centerY);
-        for(Bridge bridge : bridges.values()){
+        for(Bridge bridge : bridgesByColor.values()){
             int actualStrandStart = bridge.getStrandBridgeStart();
             int actualStrandEnd = bridge.getStrandBridgeEnd();
             double distance = 0;
@@ -648,11 +731,36 @@ public class spiderWeb
         return dir;
     }
     
-        /**
+    /**
      * Spider move in the bridge in the case that not have valid bridges
      */
     private void spiderWalkCaseFalse(String color, int dir){
         spider.move(centerX,centerY);
         spiderMovements.add(strand);
     }
+    
+    /**
+     * Delete all paths that made the spider
+     */
+    private void deletePath() {
+        List<Integer> keysToRemove = new ArrayList<>(spiderpaths.keySet());
+        for (Integer key : keysToRemove) {
+            lines path = spiderpaths.get(key);
+            path.makeInvisible();
+            spiderpaths.remove(key); 
+        }
+    }
+    
+    /**
+     * Create a representation of a path traversed by the spider.
+     */
+    public void createPath(int x1,int y1, int x2, int y2){
+        lines path = new lines(x1+4, y1+4, x2+4, y2+4, "magenta");
+        path.makeVisible();
+        spiderpaths.put(index,path);
+        index ++;
+        okay = true;
+    }
+    
+
 }

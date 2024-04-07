@@ -11,7 +11,7 @@ import java.util.Timer;
  * @version 1.0.  (15 July 2000) 
  */
 
-public class Circle{
+public class Circle {
 
     public static final double PI=3.1416;
     
