@@ -1,0 +1,8 @@
+#BlueJ class context
+comment0.target=Bouncy
+comment1.params=size\ xPos\ yPos\ color\ strand
+comment1.target=Bouncy(int,\ int,\ int,\ java.lang.String,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Bouncy\r\n
+comment2.params=spider\ strands\ nStrands
+comment2.target=void\ bounce(Spider,\ java.util.Map,\ int)
+numComments=3
