@@ -72,4 +72,8 @@ public class Spot
     public int getSize(){
         return size;
     }
+    
+    public int getStrand(){
+        return strand;
+    }
 }

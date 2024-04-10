@@ -9,15 +9,17 @@ import shapes.*;
  */
 public class Bridge
 {
-    private lines bridge;
-    private boolean isVisible;
-    private int x1;
-    private int y1;
-    private int x2;
-    private int y2;
-    private int strandBridgeStart;
-     private int strandBridgeEnd;
-
+    protected lines bridge;
+    protected boolean isVisible;
+    protected int x1;
+    protected int y1;
+    protected int x2;
+    protected int y2;
+    protected int strandBridgeStart;
+    protected int strandBridgeEnd;
+    protected int strand;
+    protected String color;
+    protected int distance;
     
     /**
      * Constructor for objects of class Bridge
@@ -27,7 +29,7 @@ public class Bridge
      * @param y1 the y part of the seconf Coordenate of the bridge
      * @param color of the bridge
      */
-    public Bridge(int x1, int y1, int x2, int y2, String color, int strand, int secondStrand)
+    public Bridge(int x1, int y1, int x2, int y2, String color, int strand, int secondStrand, int distance)
     {
         this.x1 = x1;
         this.y1 = y1;
@@ -37,6 +39,8 @@ public class Bridge
         isVisible = false;
         strandBridgeStart = strand;
         strandBridgeEnd = secondStrand;
+        this.color = color;
+        this.distance = distance;
     }
     
     /**

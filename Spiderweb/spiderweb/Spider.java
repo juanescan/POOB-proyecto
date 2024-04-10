@@ -270,7 +270,7 @@ public class Spider
     /**
      * Spider Move in the bridge in the case that strand < strands
      */
-    private void spiderWalkCase1(String color, int dir,Map<String, Bridge>bridgesByColor){
+    private void spiderWalkCase1(String color, int dir,Map<String, Bridge>bridgesByColor ,Map <String,Integer>colorAndStrand,spiderWeb spiderweb){
         Bridge bridge = bridgesByColor.get(color);
         unusedBridges.remove(color);
         if(dir == 1){
@@ -278,21 +278,30 @@ public class Spider
             move(bridge.getStartX(),bridge.getStartY());
             createPath(getX(), getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
+            if(bridge instanceof Mobile){
+                ((Mobile)bridge).movilizate(spiderweb);
+            }else if(bridge instanceof Weak){
+                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
+            }
             strand ++;
         }else if(dir == 2 ){
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
             move(bridge.getStartX(),bridge.getStartY());
+            if(bridge instanceof Mobile){
+                ((Mobile)bridge).movilizate(spiderweb);
+            }else if(bridge instanceof Weak){
+                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
+            }
             strand --;
-
         }
     }
     
     /**
      * Spider move in the bridge in the case that strand == strands
      */
-    private void spiderWalkCase2(String color, int dir, Map<String, Bridge>bridgesByColor){
+    private void spiderWalkCase2(String color, int dir, Map<String, Bridge>bridgesByColor ,Map <String,Integer>colorAndStrand,spiderWeb spiderweb){
         Bridge bridge = bridgesByColor.get(color);
         unusedBridges.remove(color);
         if(dir == 1){
@@ -300,12 +309,22 @@ public class Spider
             move(bridge.getStartX(),bridge.getStartY());
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
+            if(bridge instanceof Mobile){
+                ((Mobile)bridge).movilizate(spiderweb);
+            }else if(bridge instanceof Weak){
+                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
+            }
             strand = 1;
         }else if(dir == 2 ){
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
-             move(bridge.getEndX(),bridge.getEndY());
+            move(bridge.getEndX(),bridge.getEndY());
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
-             move(bridge.getStartX(),bridge.getStartY());
+            move(bridge.getStartX(),bridge.getStartY());
+            if(bridge instanceof Mobile){
+                ((Mobile)bridge).movilizate(spiderweb);
+            }else if(bridge instanceof Weak){
+                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
+            }
             strand --;
         }
     }
@@ -324,7 +343,7 @@ public class Spider
     /**
      * Spider move in the bridge in the case that strand == 1
      */
-    private void spiderWalkCase4(String color, int dir, Map<String, Bridge>bridgesByColor){
+    private void spiderWalkCase4(String color, int dir, Map<String, Bridge>bridgesByColor,Map <String,Integer>colorAndStrand,spiderWeb spiderweb){
         Bridge bridge = bridgesByColor.get(color);
         unusedBridges.remove(color);
         if(dir == 1){
@@ -332,46 +351,54 @@ public class Spider
             move(bridge.getStartX(),bridge.getStartY());
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
+            if(bridge instanceof Mobile){
+                ((Mobile)bridge).movilizate(spiderweb);
+            }else if(bridge instanceof Weak){
+                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
+            }
             strand ++;
-
         }else if(dir == 2 ){
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
             move(bridge.getStartX(),bridge.getStartY());
+            if(bridge instanceof Mobile){
+                ((Mobile)bridge).movilizate(spiderweb);
+            }else if(bridge instanceof Weak){
+                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
+            }
             strand = nStrands;
- 
         }
     }
     
     /**
      * Spider walk throught de spiderweb when the boolean is true
      */
-    public void spiderWalkTrue(Map<String, Bridge>bridgesByColor){
+    public void spiderWalkTrue(Map<String, Bridge>bridgesByColor,Map <String,Integer>colorAndStrand,spiderWeb spiderweb){
         String bridgeColor = bridgeColorToMove(strand,bridgesByColor);
         int dirToMove = bridgeDir(strand,bridgesByColor);
         if(bridgeColor!= null && strand<nStrands && strand != 1){
-            spiderWalkCase1(bridgeColor,dirToMove,bridgesByColor);
+            spiderWalkCase1(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }else if(bridgeColor!= null && strand == nStrands){
-            spiderWalkCase2(bridgeColor,dirToMove,bridgesByColor);
+            spiderWalkCase2(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }else if(bridgeColor == null){
             spiderWalkCase3(bridgeColor,dirToMove);
         }else if (bridgeColor != null && strand == 1){
-            spiderWalkCase4(bridgeColor,dirToMove,bridgesByColor);
+            spiderWalkCase4(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }
     }
     
-    public void spiderWalkFalse(Map<String, Bridge>bridgesByColor){
+    public void spiderWalkFalse(Map<String, Bridge>bridgesByColor,Map <String,Integer>colorAndStrand,spiderWeb spiderweb){
         String bridgeColor = bridgeColorToMoveFalse(strand,bridgesByColor);
         int dirToMove = bridgeDirFalse(strand,bridgesByColor);
         if(bridgeColor!= null && strand<nStrands && strand != 1){
-            spiderWalkCase1(bridgeColor,dirToMove,bridgesByColor);
+            spiderWalkCase1(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }else if(bridgeColor!= null && strand == nStrands){
-            spiderWalkCase2(bridgeColor,dirToMove,bridgesByColor);
+            spiderWalkCase2(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }else if(bridgeColor == null){
             spiderWalkCaseFalse(bridgeColor,dirToMove);
         }else if (bridgeColor != null && strand == 1){
-            spiderWalkCase4(bridgeColor,dirToMove,bridgesByColor);
+            spiderWalkCase4(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }
     }
     

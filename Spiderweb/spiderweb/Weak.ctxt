@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Weak
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ weak\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=x1\ y1\ x2\ y2\ color\ strand\ secondStrand\ distance
+comment1.target=Weak(int,\ int,\ int,\ int,\ java.lang.String,\ int,\ int,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ weak\r\n
+comment2.params=bridge\ bridgesByColor\ colorAndStrand
+comment2.target=void\ destroy(Bridge,\ java.util.Map,\ java.util.Map)
+numComments=3
