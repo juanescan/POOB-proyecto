@@ -18,9 +18,14 @@ public class Mobile extends Bridge{
         this.color = color;
     }
 
-    public void movilizate(spiderWeb spiderweb){
-        Spider spider = spiderweb.getSpider();
+    /**
+     *  Move the bridge to other strand with 20% more of distance,if the spider cross the bridge 
+     */
+    public void movilizate(spiderWeb spiderweb,Spider spider){
         if(spider.spiderInAPosition(x2,y2)){
+            distance = (int)(distance * 1.2);
+            spiderweb.relocateBridge(color,distance);
+        }else if(spider.spiderInAPosition(x1,y1)){
             distance = (int)(distance * 1.2);
             spiderweb.relocateBridge(color,distance);
         }

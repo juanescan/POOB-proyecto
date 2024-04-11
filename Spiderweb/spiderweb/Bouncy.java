@@ -13,6 +13,12 @@ public class Bouncy extends Spot
         super(size, xPos, yPos, color, strand);
     }
     
+    /**
+     * Generate the jump of the spider, if the spider is on the bouncy 
+     * @param the spider to generate the jump
+     * @param Map strands to get the information of strands
+     * @param nStrands to determinate the case and the number of the new strand for the spider after the jump
+     */
     public void bounce(Spider spider,Map<Integer,Strand> strands, int nStrands){
             boolean spiderPosition = spider.spiderInAPosition(xPos,yPos);
             if(spiderPosition ){

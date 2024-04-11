@@ -36,8 +36,8 @@ public class Spider
     
     /**
      * Constructor for objects of class Spider
-     * @param xStrand x part of the first Coordenate of the bridge
-     * @param yStrand y part of the first Coordenate of the bridge
+     * @param xStrand x part of the first Coordenate of the bridge  and  yStrand y part of the first Coordenate of the bridge
+     * @param strand is the strand that the spider was sit
      */
     public Spider(int size, int xStrand, int yStrand, int strand, int nStrands, int radius, int centerX, int centerY, Map<Integer, Strand> strands)
     {
@@ -102,35 +102,29 @@ public class Spider
         leg5.Coordenadas(Body.getXPosition()-Body.getWidth(),Body.getYPosition()+(Body.getHeight()/2)-(leg1.getHeight()/2));
         leg6.Coordenadas(Body.getXPosition()+Body.getWidth(),Body.getYPosition()+(Body.getHeight()/2)-(leg1.getHeight()/2));
     }
+
     
     /**
-     * Move the spider to a specific coordenate
-     * @param x and y are the coordenate
+     * Get the xPosition of spider
+     * @return coordenate x of the spider
      */
-    public void moveToCoordenates(int x, int y) {
-        int dx = x - Head.getXPosition();
-        int dy = y - Head.getYPosition();
-    
-        Head.moveTo(dx, dy);
-        Body.moveTo(dx, dy);
-        leg1.moveTo(dx, dy);
-        leg2.moveTo(dx, dy);
-        leg3.moveTo(dx, dy);
-        leg4.moveTo(dx, dy);
-        leg5.moveTo(dx, dy);
-        leg6.moveTo(dx, dy);
-    }
-    
     public int getX() {
         return Head.getXPosition();
     }  
     
+     /**
+     * Get the yPosition of spider
+     * @return coordenate y of the spider
+     */
     public int getY() {
     return Head.getYPosition();
     }
     
-    public void setStrand(int s){
-        this.strand = s;
+    /**
+     * Change the strand of the spider
+     */
+    public void setStrand(int newStrand){
+        this.strand = newStrand;
     }
     
     /**
@@ -149,7 +143,7 @@ public class Spider
     /**
      * Find the new coordenate x
      * @param distance is the distance of the new point 
-     * @param firstStrand is to select in what strand calculare the value of coordenate x
+     * @param firstStrand is to select in what strand calculate the value of coordenate x
      */
     private int findCoordenateX(int distance,int firstStrand){ 
         int x2 = (int)(centerX + distance * Math.cos(getAngleByIndex(firstStrand)));
@@ -159,18 +153,25 @@ public class Spider
     /**
      * Find the new coordenate y
      * @param distance is the distance of the new point 
-     * @param firstStrand is to select in what strand calculare the value of coordenate x
+     * @param firstStrand is to select in what strand calculate the value of coordenate x
      */
     private int findCoordenateY(int distance,int firstStrand){ 
         int y2 = (int)(centerY + distance * Math.sin(getAngleByIndex(firstStrand)));
         return y2;
     }
     
+    /**
+     * Calculate the distance of the spider to any coordenate
+     * @return the distance of the spider to that coordenate
+     */
     public double distanceToAnyObject(int x, int y){
         double distance = Math.sqrt(Math.pow(getX() - x , 2) + Math.pow(getY() - y , 2));
         return distance;
     }
     
+    /**
+     * move the spider to a specific coordenate 
+     */
     public void move(int x, int y) {
     
         Head.moveToCoordenates(x, y);
@@ -186,6 +187,7 @@ public class Spider
     
     /**
      * Determinate if the spider is in a certain position
+     * @return boolean, if the spider is in that position return true else return false 
      */
     public boolean spiderInAPosition(int xPos, int yPos){
         boolean res = false;
@@ -196,6 +198,9 @@ public class Spider
         return res;
     }
     
+    /**
+     * Check if the spider is on a Bouncy 
+     */
     public void spiderOnBouncy(Map<String, Bouncy> bouncys){
         boolean limit = false;
         for(Bouncy b : bouncys.values()){
@@ -206,6 +211,9 @@ public class Spider
         }
     }
     
+    /**
+     * Check if the spider is on a Killer
+     */
     public void spiderOnKiller(Map<String, Killer> killers, spiderWeb spiderweb){
         for(Killer k : killers.values()){
             if(getX() == k.getX() && getY() == k.getY()){
@@ -215,7 +223,7 @@ public class Spider
     }
     
     /**
-     * Check if the specific strand have bridges 
+     * Find and return the color of the bridge that of the spider is going to walk
      * @return the color of the bridge
      */
     private String bridgeColorToMove(int strand, Map<String, Bridge>bridgesByColor){
@@ -240,6 +248,10 @@ public class Spider
         return color;
     }
     
+    /**
+     * Determinate the direction of the spider going to cross one bridge
+     * return int, -1 if dont exist bridge that fulfill the condition, 1 if going to cross the bridge is to the start point of the bridge to the final point, 2 if going to cross the bridge is to end point of the bridge to the start point
+     */ 
     private Integer bridgeDir(int strand, Map<String, Bridge>bridgesByColor){
         double shortDistance = Double.MAX_VALUE;
         int bridgeStrand = -1;
@@ -279,7 +291,7 @@ public class Spider
             createPath(getX(), getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
             if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb);
+                ((Mobile)bridge).movilizate(spiderweb,this);
             }else if(bridge instanceof Weak){
                 ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
             }
@@ -290,7 +302,7 @@ public class Spider
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
             move(bridge.getStartX(),bridge.getStartY());
             if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb);
+                ((Mobile)bridge).movilizate(spiderweb,this);
             }else if(bridge instanceof Weak){
                 ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
             }
@@ -310,7 +322,7 @@ public class Spider
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
             if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb);
+                ((Mobile)bridge).movilizate(spiderweb,this);
             }else if(bridge instanceof Weak){
                 ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
             }
@@ -321,7 +333,7 @@ public class Spider
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
             move(bridge.getStartX(),bridge.getStartY());
             if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb);
+                ((Mobile)bridge).movilizate(spiderweb,this);
             }else if(bridge instanceof Weak){
                 ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
             }
@@ -352,7 +364,7 @@ public class Spider
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
             if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb);
+                ((Mobile)bridge).movilizate(spiderweb,this);
             }else if(bridge instanceof Weak){
                 ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
             }
@@ -363,7 +375,7 @@ public class Spider
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
             move(bridge.getStartX(),bridge.getStartY());
             if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb);
+                ((Mobile)bridge).movilizate(spiderweb,this);
             }else if(bridge instanceof Weak){
                 ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
             }
@@ -372,7 +384,7 @@ public class Spider
     }
     
     /**
-     * Spider walk throught de spiderweb when the boolean is true
+     * Determinate what is the case that the spider going to walk in case that advance was true
      */
     public void spiderWalkTrue(Map<String, Bridge>bridgesByColor,Map <String,Integer>colorAndStrand,spiderWeb spiderweb){
         String bridgeColor = bridgeColorToMove(strand,bridgesByColor);
@@ -387,7 +399,10 @@ public class Spider
             spiderWalkCase4(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }
     }
-    
+
+    /**
+     * Determinate what is the case that the spider going to walk in case that advance was false
+     */
     public void spiderWalkFalse(Map<String, Bridge>bridgesByColor,Map <String,Integer>colorAndStrand,spiderWeb spiderweb){
         String bridgeColor = bridgeColorToMoveFalse(strand,bridgesByColor);
         int dirToMove = bridgeDirFalse(strand,bridgesByColor);
@@ -402,6 +417,10 @@ public class Spider
         }
     }
     
+     /**
+     * Find and return the color of the bridge that of the spider is going to walk in case that advance was false
+     * @return the color of the bridge
+     */
     private String bridgeColorToMoveFalse(int strand, Map<String, Bridge>bridgesByColor){
         double biggestDistance = Double.MIN_VALUE;
         int bridgeStrand = -1;
@@ -424,7 +443,10 @@ public class Spider
         return color;
     }
     
-    private int bridgeDirFalse(int strand, Map<String, Bridge>bridgesByColor){
+    /**
+     * Determinate the direction of the spider going to cross one bridge in case that advance was false
+     * return int, -1 if dont exist bridge that fulfill the condition, 1 if going to cross the bridge is to the start point of the bridge to the final point, 2 if going to cross the bridge is to end point of the bridge to the start point
+     */ private int bridgeDirFalse(int strand, Map<String, Bridge>bridgesByColor){
         double biggestDistance = Double.MIN_VALUE;
         int bridgeStrand = -1;
         int dir = -1;
@@ -451,7 +473,7 @@ public class Spider
     }
     
     /**
-     * Spider move in the bridge in the case that not have valid bridges
+     * Spider move in the bridge in the case that not have valid bridges and advance was fals
      */
     private void spiderWalkCaseFalse(String color, int dir){
          move(centerX,centerY);
@@ -470,7 +492,7 @@ public class Spider
     }
     
     /**
-     * Create a representation of a path traversed by the  
+     * Create a representation of a path traversed by the spider
      */
     private void createPath(int x1,int y1, int x2, int y2){
         lines path = new lines(x1+4, y1+4, x2+4, y2+4, "magenta");
@@ -481,6 +503,7 @@ public class Spider
     
     /**
      * Return the bridges that the spider dont use
+     * @return ArrayList of Strings that are the color of the bridges 
      */
     public ArrayList<String> unusedBridges(Map<String, Bridge> unusedBridges){
         this.unusedBridges = unusedBridges;

@@ -37,13 +37,6 @@ public class Circle {
         draw();
     }
     
-    public void moveTo(int x,int y){
-        erase();
-        xPosition += x;
-        yPosition += y;
-        draw();
-    }
-    
     /**
      * hace visible el objeto
      */
@@ -75,16 +68,6 @@ public class Circle {
             Canvas canvas = Canvas.getCanvas();
             canvas.erase(this);
         }
-    }
-    
-    /**
-     * Change the size.
-     * @param newDiameter the new size (in pixels). Size must be >=0.
-     */
-    public void changeSize(int newDiameter){
-        erase();
-        diameter = newDiameter;
-        draw();
     }
     
     public String getColor(){

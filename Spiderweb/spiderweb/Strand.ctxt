@@ -6,6 +6,7 @@ comment1.target=Strand(int,\ int,\ double,\ int,\ int)
 comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Strand\r\n
 comment2.params=
 comment2.target=void\ draw()
+comment2.text=\r\n\ Draw\ the\ strand\ \r\n
 comment3.params=
 comment3.target=void\ makeInvisible()
 comment3.text=\r\n\ Make\ invisible\ the\ strand\ \r\n

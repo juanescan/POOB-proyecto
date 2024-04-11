@@ -6,4 +6,5 @@ comment1.target=Transformer(int,\ int,\ int,\ int,\ java.lang.String,\ int,\ int
 comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Transformer\r\n
 comment2.params=spiderweb
 comment2.target=void\ transform(spiderWeb)
+comment2.text=\r\n\ Transform\ to\ the\ spot\ in\ the\ same\ strand\ if\ the\ bridge\ is\ delete\r\n
 numComments=3

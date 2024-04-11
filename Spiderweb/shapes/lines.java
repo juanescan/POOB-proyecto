@@ -50,7 +50,7 @@ public class lines
     }
     
     /**
-     * draw the object
+     * draw the line
      */
     private void draw(){
         Canvas canvas = Canvas.getCanvas();
@@ -92,52 +92,4 @@ public class lines
     public String getColor(){
         return color;
     }
-    
-    public int getEndY(int startX, int startY) {
-        if (startX == x1 && startY == y1) {
-        return y2;
-        } 
-    
-        else if (startX == x2 && startY == y2) {
-        return y1;
-        } 
-   
-        else if (startX == x1 && startY == y2) {
-        return y1;
-        } 
-    
-        else if (startX == x2 && startY == y1) {
-        return y2;
-        } 
-
-        else {
-        return -1; 
-        }
-    }
-    
-    public int getEndX(int startX, int startY) {
-        if (startX == x1 && startY == y1) {
-        return x2;
-        } 
-    
-        else if (startX == x2 && startY == y2) {
-        return x1;
-        } 
-   
-        else if (startX == x1 && startY == y2) {
-        return x1;
-        } 
-    
-        else if (startX == x2 && startY == y1) {
-        return x2;
-        } 
-
-        else {
-        return -1; 
-        }
-    }
-
-    
-
-    
 }

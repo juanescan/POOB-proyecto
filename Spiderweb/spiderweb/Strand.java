@@ -9,7 +9,6 @@ import shapes.*;
  */
 public class Strand
 {
-    // instance variables - replace the example below with your own
     private int x;
     private int y;
     private int centerX;
@@ -20,8 +19,6 @@ public class Strand
     private int strands;
     private lines strand;
 
-
-    
     /**
      * Constructor for objects of class Strand
      */
@@ -37,6 +34,9 @@ public class Strand
         strand = new lines(centerX,centerY,x,y);
     }
     
+    /**
+     * Draw the strand 
+     */
     private void draw(){
         strand.makeVisible();
     }

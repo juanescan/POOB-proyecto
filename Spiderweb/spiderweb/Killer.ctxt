@@ -6,4 +6,5 @@ comment1.target=Killer(int,\ int,\ int,\ java.lang.String,\ int)
 comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ killer\r\n
 comment2.params=spider\ spiderweb
 comment2.target=void\ kill(Spider,\ spiderWeb)
+comment2.text=\r\n\ Kill\ the\ spider,\ if\ the\ spider\ is\ on\ killer\ \r\n
 numComments=3

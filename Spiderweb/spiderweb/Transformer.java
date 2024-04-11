@@ -20,6 +20,9 @@ public class Transformer extends Bridge
         this.color = color;
     }
     
+    /**
+     * Transform to the spot in the same strand if the bridge is delete
+     */
     public void transform(spiderWeb spiderweb){
            spiderweb.addSpot(color,strand); 
     }
