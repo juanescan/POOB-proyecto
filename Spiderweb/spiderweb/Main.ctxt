@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Main
+comment1.params=x\ segt
+comment1.target=int\ ask(int,\ Main.SegT)
+comment2.params=x\ segt
+comment2.target=void\ update(int,\ Main.SegT)
+comment3.params=args
+comment3.target=void\ main(java.lang.String[])
+numComments=4
