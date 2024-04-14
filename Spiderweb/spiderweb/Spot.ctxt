@@ -23,4 +23,6 @@ comment7.params=
 comment7.target=int\ getSize()
 comment8.params=
 comment8.target=int\ getStrand()
-numComments=9
+comment9.params=spider
+comment9.target=void\ actWithTheSpider(Spider)
+numComments=10

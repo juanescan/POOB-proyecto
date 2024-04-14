@@ -21,14 +21,14 @@ public class spiderwebc2test
     @Test
     public void testAddBridge() {
         spiderWeb web = new spiderWeb(5, 150);
-        web.addBridge("red", 50, 1); // Example parameters
+        web.addBridge("red", 50, 1); 
         assertTrue(web.ok());
     }
     
     @Test
     public void testAddSpot() {
         spiderWeb web = new spiderWeb(5, 150);
-        web.addSpot("blue", 2); // Example parameters
+        web.addSpot("blue", 2); 
         assertTrue(web.ok());
     }
     
@@ -52,7 +52,7 @@ public class spiderwebc2test
     public void testSpiderWalk() {
         spiderWeb web = new spiderWeb(5, 150);
         web.spiderSit(1);
-        web.spiderWalk(true); // Example parameter
+        web.spiderWalk(true); 
         assertTrue(web.ok());
     }
     

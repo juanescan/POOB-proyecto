@@ -17,16 +17,18 @@ public class Killer extends Spot
         super(size, xPos, yPos, color, strand);
 
     }
-
-    /**
-     * Kill the spider, if the spider is on killer 
-     */
-    public void kill(Spider spider, spiderWeb spiderweb){
-        boolean spiderPosition = spider.spiderInAPosition(xPos,yPos);
-        if(spiderPosition){
+    
+    public spiderWeb getInstanceofSpiderWeb(){
+        return spiderWeb.getInstance();
+    }
+    
+    public void actWithTheSpider(Spider spider){
+        spiderWeb spiderweb = getInstanceofSpiderWeb();
+        if(spider.getX() == xPos && spider.getY() == yPos){
             spider.makeInvisible();
             spider.deletePath();
             spider = null;
         }
+    
     }
 }

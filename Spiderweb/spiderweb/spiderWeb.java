@@ -5,7 +5,7 @@ import java.lang.Math;
 import java.util.*;
 import java.util.ArrayList;
 import javax.swing.JFrame;
-
+import java.lang.reflect.*;
 
 /**
  * SpiderWeb.
@@ -15,6 +15,7 @@ import javax.swing.JFrame;
  */
 public class spiderWeb
 {
+    private static spiderWeb instance = null;
     private int strands;
     private int x;
     private int y;
@@ -46,7 +47,7 @@ public class spiderWeb
      * @param strands number of the strands of the SpiderWeb
      * @param radius the size of the SpiderWeb
      */
-    public spiderWeb(int strands,int radius){
+    private spiderWeb(int strands,int radius){
         this.strands = strands;
         this.radius = radius;
         centerX = 400;
@@ -243,7 +244,7 @@ public class spiderWeb
         }else if(spotExists){
             System.out.println("Ya existe un spot en esa strand");
         }
-        else{Spot spot = new Spot(size,xPos,yPos,color,strand);
+        else{Spot spot = new Normal(size,xPos,yPos,color,strand);
             spot.makeVisible();
             spots.put(color,spot);
             okay = true;
@@ -257,23 +258,25 @@ public class spiderWeb
      * @param type is to specify the type of spot ("bouncy","killer")
      */
     
-    public void addSpot(String type, String color, int strand){
-        int size = (int)(radius/4);
+     public void addSpot(String type, String color, int strand) {
+        int size = (int) (radius / 4);
         Strand s = strandsAndCoordenates.get(strand);
         int xPos = s.getX();
         int yPos = s.getY();
-        if(type.equals("bouncy")){
-            Bouncy bouncy = new Bouncy(size,xPos,yPos,color,strand);
-            bouncy.makeVisible();
-            spots.put(color,bouncy);
-            bouncys.put(color,bouncy);
-        }else if(type.equals("killer")){
-            Killer killer = new Killer(size,xPos,yPos,color,strand);
-            killer.makeVisible();
-            spots.put(color,killer);
-            killers.put(color,killer);
-        }else if(type.equals("normal")){
-            addSpot(color,strand);
+        
+        try {
+
+            Class<?> spotClass = Class.forName("spiderweb." + type);
+
+            Constructor<?> constructor = spotClass.getConstructor(int.class, int.class, int.class, String.class, int.class);
+
+            Object spotInstance = constructor.newInstance(size, xPos, yPos, color, strand);
+
+            ((Spot) spotInstance).makeVisible();
+            spots.put(color, (Spot) spotInstance);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     
@@ -319,13 +322,12 @@ public class spiderWeb
             Strand stra = strandsAndCoordenates.get(strand);
             for (int i = 0; i < countBridges; i++) {
                if(advance && spider != null){
-                spider.spiderWalkTrue(bridgesByColor,colorAndStrand,this);
-                spider.spiderOnBouncy(bouncys);
-                spider.spiderOnKiller(killers,this);
+                spider.spiderWalkTrue(bridgesByColor,colorAndStrand,this,spots);
                }else if(!advance && spider != null) {
                 spider.spiderWalkFalse(bridgesByColor,colorAndStrand,this);
                }
             }
+            spotAct();
         }else{
             System.out.println("No existe ninguna araña primero inicialicela con spiderSit");
             okay = false;
@@ -736,7 +738,31 @@ public class spiderWeb
         y = (int)(centerY + radius * Math.sin(currentAngle));
         return y;
     }
-  
-
-
+      
+    public static spiderWeb getInstance() {
+        return instance;
+    }
+    
+    public static void createInstance(int strands, int radius){
+        instance = new spiderWeb(strands, radius);
+    }
+    
+    public int getStrands(){
+        return strands;
+    }
+    
+    public Map<Integer,Strand> getStrandsAndCoordenates(){
+        return strandsAndCoordenates;
+    }
+    
+    private void spotAct(){
+        boolean limit = false;
+        for(Spot s : spots.values()){
+            if(s.getStrand() == strand && !limit){
+                Spot spot = s;
+                spot.actWithTheSpider(spider);
+                limit = true;
+            }
+        }
+    }
 }

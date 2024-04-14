@@ -198,29 +198,7 @@ public class Spider
         return res;
     }
     
-    /**
-     * Check if the spider is on a Bouncy 
-     */
-    public void spiderOnBouncy(Map<String, Bouncy> bouncys){
-        boolean limit = false;
-        for(Bouncy b : bouncys.values()){
-           if(getX() == b.getX() && getY() == b.getY() && !limit) {
-               b.bounce(this, strandsAndCoordenates, nStrands);
-               limit = true;
-           } 
-        }
-    }
-    
-    /**
-     * Check if the spider is on a Killer
-     */
-    public void spiderOnKiller(Map<String, Killer> killers, spiderWeb spiderweb){
-        for(Killer k : killers.values()){
-            if(getX() == k.getX() && getY() == k.getY()){
-                k.kill(this,spiderweb);
-            }
-        }
-    }
+
     
     /**
      * Find and return the color of the bridge that of the spider is going to walk
@@ -344,11 +322,18 @@ public class Spider
     /**
      * Spider move in the bridge in the case that not have valid bridges
      */
-    private void spiderWalkCase3(String color, int dir){
+    private void spiderWalkCase3(String color, int dir,Map<String,Spot> spots){
         int xPos = findCoordenateX(radius,strand);
         int yPos = findCoordenateY(radius,strand);
         createPath( getX(),  getY(), xPos, yPos);
         move(xPos,yPos);
+        boolean limit = false;
+        for(Spot s : spots.values()){
+            if(!limit){
+            s.actWithTheSpider(this);
+            limit = true;
+            }
+        }
 
     }
     
@@ -386,7 +371,7 @@ public class Spider
     /**
      * Determinate what is the case that the spider going to walk in case that advance was true
      */
-    public void spiderWalkTrue(Map<String, Bridge>bridgesByColor,Map <String,Integer>colorAndStrand,spiderWeb spiderweb){
+    public void spiderWalkTrue(Map<String, Bridge>bridgesByColor,Map <String,Integer>colorAndStrand,spiderWeb spiderweb,Map<String,Spot>spots){
         String bridgeColor = bridgeColorToMove(strand,bridgesByColor);
         int dirToMove = bridgeDir(strand,bridgesByColor);
         if(bridgeColor!= null && strand<nStrands && strand != 1){
@@ -394,7 +379,7 @@ public class Spider
         }else if(bridgeColor!= null && strand == nStrands){
             spiderWalkCase2(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }else if(bridgeColor == null){
-            spiderWalkCase3(bridgeColor,dirToMove);
+            spiderWalkCase3(bridgeColor,dirToMove,spots);
         }else if (bridgeColor != null && strand == 1){
             spiderWalkCase4(bridgeColor,dirToMove,bridgesByColor,colorAndStrand,spiderweb);
         }

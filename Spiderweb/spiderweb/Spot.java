@@ -8,7 +8,7 @@ import shapes.*;
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class Spot
+abstract class Spot
 {
     // instance variables - replace the example below with your own
     protected Circle spot;
@@ -76,4 +76,6 @@ public class Spot
     public int getStrand(){
         return strand;
     }
+    
+    public abstract void actWithTheSpider(Spider spider);
 }
