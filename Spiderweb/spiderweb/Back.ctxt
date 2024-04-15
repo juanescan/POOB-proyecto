@@ -1,0 +1,9 @@
+#BlueJ class context
+comment0.target=Back
+comment0.text=\r\n\ Write\ a\ description\ of\ class\ Back\ here.\r\n\ \r\n\ @author\ (your\ name)\ \r\n\ @version\ (a\ version\ number\ or\ a\ date)\r\n
+comment1.params=size\ xPos\ yPos\ color\ strand
+comment1.target=Back(int,\ int,\ int,\ java.lang.String,\ int)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Back\r\n
+comment2.params=spider
+comment2.target=void\ actWithTheSpider(Spider)
+numComments=3

@@ -1,5 +1,6 @@
 package spiderweb; 
 import shapes.*;   
+import java.util.Map;
 
 /**
  * Bridge.
@@ -7,7 +8,7 @@ import shapes.*;
  * @author (Juan Cancelado y Santiago Córdoba) 
  * @version (1.0)
  */
-public class Bridge
+public abstract class Bridge
 {
     protected lines bridge;
     protected boolean isVisible;
@@ -89,4 +90,16 @@ public class Bridge
     public int getStrandBridgeEnd(){
         return strandBridgeEnd;
     }
+    
+    public void setStrandBridgeStart(int newStrand){
+        strandBridgeStart = newStrand;
+    }
+    
+    public int getDistance(){
+        return distance;
+    }
+    
+    public abstract void delete(Map<String,Bridge>bridgesByColor,Map<String,Integer>colorAndStrand,Map<String,Bridge>unusedBridges);
+    
+    public abstract void act();
 }

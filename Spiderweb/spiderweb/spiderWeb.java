@@ -32,15 +32,13 @@ public class spiderWeb
     private int strand;
     private Map<String,Integer> colorAndStrand;
     private boolean okay;
-    private ArrayList<Integer> spiderMovements;
     private int countBridges;
-    private Map<Integer, lines> spiderpaths;
+    private ArrayList<Integer> spiderLastPath;
     private int index;
     private Map<String, Bridge> unusedBridges;
     private int[][] bridges;
     private boolean isProblem;
-    private Map<String,Bouncy> bouncys;
-    private Map<String,Killer> killers;
+
     
     /**
      * Constructor for objects of class spiderWeb
@@ -60,12 +58,9 @@ public class spiderWeb
         unusedBridges = new HashMap<>();
         colorAndStrand = new HashMap<>();
         okay = true;
-        spiderMovements = new ArrayList<>();
         countBridges = 1;
-        spiderpaths = new HashMap<>();
+        spiderLastPath = new ArrayList<>();
         isProblem = false;
-        bouncys = new HashMap<>();
-        killers = new HashMap<>();
         makeVisible();
     }
     
@@ -89,6 +84,7 @@ public class spiderWeb
         colorAndStrand = new HashMap<>();
         isProblem = true;
         makeVisible();
+        okay = true;
     }
     
     /**
@@ -139,15 +135,19 @@ public class spiderWeb
      * @param firstStrand is the initial strand where begin the bridge
      */
     public void addBridge(String color, int distance, int firstStrand){
-        if (distance <= 0 || distance > radius) {
+        if (distance <= 0 || distance > radius || firstStrand<1 || firstStrand > strands) {
             okay = false;
-            System.out.println("La distancia debe ser positiva y no debe ser mayor al radio");
+            System.out.println("El ingreso de los datos es erroneo ingrese los datos correspondientes ");
+        }else{
+            if(firstStrand<strands){
+                createBridgeCase1(color,distance,firstStrand);
+                okay = true;
+            }else if(firstStrand == strands){
+                createBridgeCase2(color,distance,firstStrand);
+                okay = true;
+            }
         }
-        if(firstStrand<strands){
-            createBridgeCase1(color,distance,firstStrand);
-        }else if(firstStrand == strands){
-            createBridgeCase2(color,distance,firstStrand);
-        }
+
     }
     
     /**
@@ -158,32 +158,33 @@ public class spiderWeb
      * @param firstStrand is the initial strand where begin the bridge
      */
     public void addBridge(String type, String color, int distance, int firstStrand){
-        if(type.equals("fixed")){
-            if(firstStrand<strands){
-            createFixedCase1(color,distance,firstStrand);
-            }else if(firstStrand == strands){
-            createFixedCase2(color,distance,firstStrand);
-            }
-        }else if(type.equals("transformer")){
-            if(firstStrand<strands){
-            createTransformerCase1(color,distance,firstStrand);
-            }else if(firstStrand == strands){
-            createTransformerCase2(color,distance,firstStrand);
-            }
-        }else if(type.equals("mobile")){
-            if(firstStrand<strands){
-            createMobileCase1(color,distance,firstStrand);
-            }else if(firstStrand == strands){
-            createMobileCase2(color,distance,firstStrand);
-            }
-        }else if(type.equals("weak")){
-            if(firstStrand<strands){
-            createWeakCase1(color,distance,firstStrand);
-            }else if(firstStrand == strands){
-            createWeakCase2(color,distance,firstStrand);
-            }
-        }else if(type.equals("normal")){
-            addBridge(color,distance,firstStrand);
+        int x1 = findCoordenateX(distance,firstStrand);
+        int y1 = findCoordenateY(distance,firstStrand);
+        int x2 = 0;
+        int y2 = 0;
+        int secondStrand = 0;
+        if(firstStrand<strands){
+            x2 = findCoordenateX(distance,firstStrand+1);
+            y2 = findCoordenateY(distance,firstStrand+1);      
+            secondStrand = firstStrand+1;
+        }else if(firstStrand == strands){
+            x2 = findCoordenateX(distance,1);
+            y2 = findCoordenateY(distance,1);      
+            secondStrand = 1;
+        }
+        try {
+            Class<?> bridgeClass = Class.forName("spiderweb." + type);
+            Constructor<?> constructor = bridgeClass.getConstructor(int.class, int.class, int.class, int.class, String.class, int.class,int.class, int.class);
+            Object bridgeInstance = constructor.newInstance(x1, y1, x2, y2, color, firstStrand, secondStrand, distance);
+            ((Bridge) bridgeInstance).makeVisible();
+            bridgesByColor.put(color, (Bridge) bridgeInstance);
+            unusedBridges.put(color, (Bridge) bridgeInstance);
+            colorAndStrand.put(color, firstStrand);
+            countBridges ++;
+            okay = true;
+        } catch (Exception e) {
+            okay = false;
+            e.printStackTrace();
         }
     }
     
@@ -195,36 +196,32 @@ public class spiderWeb
     public void relocateBridge(String color, int distance){
         if (bridgesByColor.containsKey(color)){
             Bridge bridge = bridgesByColor.get(color);
-            delBridge(color);
-            if(bridge instanceof Mobile){
-                int saveStrand = colorAndStrand.get(color) ;
-                if(saveStrand < strands){
-                    saveStrand ++; 
-                }else if(saveStrand == strands){
-                    saveStrand = 1;
-                }
-                addBridge(color,distance,saveStrand);
+            if(bridge.getDistance() == distance || distance < 1 || distance > radius){
+                System.out.println("ponga una distancia distinta");
+                okay = false;
             }else{
                 int saveStrand = colorAndStrand.get(color);
-            addBridge(color,distance,saveStrand);
+                delBridge(color);
+                addBridge(color,distance,saveStrand);
+                okay = true; 
             }
-            okay = true;
+        }else {
+            okay = false;
         }
     }
+    
     
     /**
      * remove the bridge of a specific color
      * @param color is to select which color bridge we will remove
      */
     public void delBridge(String color) { 
-        Bridge bridge = bridgesByColor.get(color);
-        if (bridge.getColor().equals(color) && !(bridge instanceof Fixed)) {
-            if(bridge instanceof Transformer){
-                ((Transformer)bridge).transform(this);
-            }
-            bridge.makeInvisible();
-            bridgesByColor.remove(color);
+        if (bridgesByColor.containsKey(color)){
+            Bridge bridge = bridgesByColor.get(color);
+            bridge.delete(bridgesByColor,colorAndStrand,unusedBridges);
             okay = true;
+        }else {
+            okay = false;
         }
     }
 
@@ -243,8 +240,9 @@ public class spiderWeb
             okay = false;
         }else if(spotExists){
             System.out.println("Ya existe un spot en esa strand");
-        }
-        else{Spot spot = new Normal(size,xPos,yPos,color,strand);
+            okay = false;
+        }else{
+            Spot spot = new Normal(size,xPos,yPos,color,strand);
             spot.makeVisible();
             spots.put(color,spot);
             okay = true;
@@ -285,12 +283,15 @@ public class spiderWeb
      * @param color is to select which spot remove
      */
     public void delSpot(String color) {
-        Spot spot = spots.get(color);
-        if (spot.getColor().equals(color)) {
+        if(spots.containsKey(color)){
+            Spot spot = spots.get(color);
             spot.makeInvisible(); 
             spots.remove(color);
             okay = true;
+        }else{
+            okay = false;
         }
+        
     }
 
     /**
@@ -299,18 +300,19 @@ public class spiderWeb
      */
     public void spiderSit(int strand) {
         this.strand = strand;
-        if(strand > strands){
+        if(strand > strands || strand < 1){
             okay = false;
             System.out.println("El strand indicado no existe");
+        }else{
+            if(spider == null){
+            spider = new Spider(radius-(radius/2),centerX,centerY,strand,strands,radius,centerX,centerY,strandsAndCoordenates);
+            }
+            spider.setStrand(strand);
+            spider.makeVisible();
+            spider.move(centerX,centerY); 
+            spider.deletePath();
+            okay = true;
         }
-        if(spider == null){
-            spider = new Spider(radius-(radius/5),centerX,centerY,strand,strands,radius,centerX,centerY,strandsAndCoordenates);
-        }
-        spider.setStrand(strand);
-        spider.makeVisible();
-        spider.move(centerX,centerY); 
-        spider.deletePath();
-        okay = true;
     }
     
     /**
@@ -319,15 +321,17 @@ public class spiderWeb
      */
     public void spiderWalk(boolean advance) {
         if(spider!=null){
-            Strand stra = strandsAndCoordenates.get(strand);
             for (int i = 0; i < countBridges; i++) {
-               if(advance && spider != null){
+               Strand stra = strandsAndCoordenates.get(strand);
+               if(advance && spider != null  && spider.getX() != stra.getX() || spider.getY() != stra.getY()){
                 spider.spiderWalkTrue(bridgesByColor,colorAndStrand,this,spots);
                }else if(!advance && spider != null) {
                 spider.spiderWalkFalse(bridgesByColor,colorAndStrand,this);
                }
             }
+            strand = spider.getStrand();
             spotAct();
+            okay = true;
         }else{
             System.out.println("No existe ninguna araña primero inicialicela con spiderSit");
             okay = false;
@@ -392,14 +396,20 @@ public class spiderWeb
      * @return ArrayList of string that are the color of bridges of bridges that in the moment dont use for the spider
      */
     public ArrayList<String> unusedBridges(){
-        ArrayList<String> unused = spider.unusedBridges(unusedBridges);
-        return unused;
+        if(spider != null){
+            ArrayList<String> unused = spider.unusedBridges(unusedBridges);
+            okay = true;
+            return unused;
+        }
+        System.out.println("inicialice la araña primero");
+        okay = false;
+        return null;
     }
     
     /**
      * Eliminate SpiderWeb, bridges, spots
      */
-    private void eliminate(){
+    public void eliminate(){
         for(Bridge bridge: bridgesByColor.values()){
             bridge.makeInvisible();
             bridgesByColor.remove(bridge);
@@ -507,7 +517,11 @@ public class spiderWeb
         ArrayList<Integer> bridgeCounts = new ArrayList<>();
         for(Bridge bridge : bridgesByColor.values()) {
             if (bridge.getColor().equals(color)) {
-                bridgeCounts.add(1); 
+                Bridge b = bridgesByColor.get(color);
+                int i = b.getStrandBridgeStart();
+                bridgeCounts.add(i);
+                int j = b.getStrandBridgeEnd();
+                bridgeCounts.add(j);
             }
         }
         okay = true;
@@ -522,7 +536,9 @@ public class spiderWeb
         ArrayList<Integer> spotCounts = new ArrayList<>();
         for(Spot spot:spots.values()){
             if(spot.getColor().equals(color)){
-                spotCounts.add(1);
+                Spot s = spots.get(color);
+                int i = s.getStrand();
+                spotCounts.add(i);
             }
         }
         okay = true;
@@ -559,7 +575,7 @@ public class spiderWeb
      * Finish the simulator 
      */
     public void finish() {
-        System.exit(1);
+        System.exit(0);
     }
     
     /**
@@ -575,6 +591,7 @@ public class spiderWeb
      * @return Arraylist of integers with the indexes of bridges
      */
     public ArrayList<Integer> spiderLastPath() {
+        ArrayList<Integer> spiderMovements = spider.lastPath();
         return spiderMovements;
 
     }
@@ -583,7 +600,7 @@ public class spiderWeb
      *  Create bridge when firstStrand < strands
      */
     private void createBridgeCase1(String color,int distance ,int firstStrand){
-        Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
+        Bridge bridge = new NormalB(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
             findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color, firstStrand, firstStrand + 1,distance);
         bridge.makeVisible();
         bridgesByColor.put(color,bridge);
@@ -597,123 +614,11 @@ public class spiderWeb
      * Create bridge when firstStrand = strands
      */
     private void createBridgeCase2(String color,int distance, int firstStrand){
-        Bridge bridge = new Bridge(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
+        Bridge bridge = new NormalB(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
                         ,findCoordenateX(distance,1),findCoordenateY(distance,1),color,firstStrand,1,distance);
         bridge.makeVisible();
         bridgesByColor.put(color,bridge);
         unusedBridges.put(color,bridge);
-        colorAndStrand.put(color,firstStrand);
-        okay = true;
-        countBridges++;
-    }
-    
-    /**
-     * Create Fixed bridge when firstStrand < strands
-     */
-    private void createFixedCase1(String color,int distance ,int firstStrand){
-        Fixed fixed = new Fixed(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
-            findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color, firstStrand, firstStrand + 1,distance);
-        fixed.makeVisible();
-        bridgesByColor.put(color,fixed);
-        unusedBridges.put(color,fixed);
-        colorAndStrand.put(color,firstStrand);
-        okay = true;
-        countBridges++;
-    }
-    
-    /**
-     * Create Fixed bridge when firstStrand = strands
-     */
-    private void createFixedCase2(String color,int distance, int firstStrand){
-        Fixed fixed = new Fixed(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color,firstStrand,1,distance);
-        fixed.makeVisible();
-        bridgesByColor.put(color,fixed);
-        unusedBridges.put(color,fixed);
-        colorAndStrand.put(color,firstStrand);
-        okay = true;
-        countBridges++;
-    }
-    
-      /**
-     *Create Transformer bridge when firstStrand < strands
-     */
-    private void createTransformerCase1(String color,int distance ,int firstStrand){
-        Transformer transformer = new Transformer(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
-            findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color, firstStrand, firstStrand + 1,distance);
-        transformer.makeVisible();
-        bridgesByColor.put(color,transformer);
-        unusedBridges.put(color,transformer);
-        colorAndStrand.put(color,firstStrand);
-        okay = true;
-        countBridges++;
-    }
-    
-    /**
-     * Create Transformer when firstStrand = strands
-     */
-    private void createTransformerCase2(String color,int distance, int firstStrand){
-        Transformer transformer = new Transformer(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color,firstStrand,1,distance);
-        transformer.makeVisible();
-        bridgesByColor.put(color,transformer);
-        unusedBridges.put(color,transformer);
-        colorAndStrand.put(color,firstStrand);
-        okay = true;
-        countBridges++;
-    }
-    
-     /**
-     * Create Mobile bridge when firstStrand < strands
-     */
-    private void createMobileCase1(String color,int distance ,int firstStrand){
-        Mobile mobile = new Mobile(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
-            findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color, firstStrand, firstStrand + 1,distance);
-        mobile.makeVisible();
-        bridgesByColor.put(color,mobile);
-        unusedBridges.put(color,mobile);
-        colorAndStrand.put(color,firstStrand);
-        okay = true;
-        countBridges++;
-    }
-    
-    /**
-     * Create Mobile bridge when firstStrand = strands
-     */
-    private void createMobileCase2(String color,int distance, int firstStrand){
-        Mobile mobile = new Mobile(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color,firstStrand,1,distance);
-        mobile.makeVisible();
-        bridgesByColor.put(color,mobile);
-        unusedBridges.put(color,mobile);
-        colorAndStrand.put(color,firstStrand);
-        okay = true;
-        countBridges++;
-    }
-    
-    /**
-     * Create Weak bridge when firstStrand < strands
-     */
-    private void createWeakCase1(String color,int distance ,int firstStrand){
-        Weak weak = new Weak(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand),
-            findCoordenateX(distance,firstStrand+1),findCoordenateY(distance,firstStrand+1),color, firstStrand, firstStrand + 1,distance);
-        weak.makeVisible();
-        bridgesByColor.put(color,weak);
-        unusedBridges.put(color,weak);
-        colorAndStrand.put(color,firstStrand);
-        okay = true;
-        countBridges++;
-    }
-    
-    /**
-     * Create Weak bridge when firstStrand = strands
-     */
-    private void createWeakCase2(String color,int distance, int firstStrand){
-        Weak weak = new Weak(findCoordenateX(distance,firstStrand),findCoordenateY(distance,firstStrand)
-                        ,findCoordenateX(distance,1),findCoordenateY(distance,1),color,firstStrand,1,distance);
-        weak.makeVisible();
-        bridgesByColor.put(color,weak);
-        unusedBridges.put(color,weak);
         colorAndStrand.put(color,firstStrand);
         okay = true;
         countBridges++;
@@ -743,16 +648,43 @@ public class spiderWeb
         return instance;
     }
     
-    public static void createInstance(int strands, int radius){
-        instance = new spiderWeb(strands, radius);
+    public static spiderWeb getInstance(int strands, int radius) {
+        if (instance == null) {
+            instance = new spiderWeb(strands, radius);
+        }
+        return instance;
+    }
+    
+    public Map<Integer,Strand> getStrandsAndCoordenates(){
+        return strandsAndCoordenates;
     }
     
     public int getStrands(){
         return strands;
     }
     
-    public Map<Integer,Strand> getStrandsAndCoordenates(){
-        return strandsAndCoordenates;
+    public Spider getSpider(){
+        return spider;
+    }
+    
+    public Map<String,Bridge> getBridgesByColor(){
+        return bridgesByColor;
+    }
+    
+    public Map<String,Bridge> getUnusedBridges(){
+        return unusedBridges;
+    }
+    
+    public Map<String,Integer> getColorAndStrand(){
+        return colorAndStrand;
+    }
+    
+    public Map<String,Spot> getSpots(){
+        return spots;
+    }
+    
+    public int getStrand(){
+        return strand;
     }
     
     private void spotAct(){

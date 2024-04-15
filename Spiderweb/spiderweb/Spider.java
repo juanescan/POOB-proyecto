@@ -26,13 +26,14 @@ public class Spider
     private boolean isVisible;
     private Map<String, Bridge> unusedBridges;
     private Map<Integer, lines> spiderpaths;
+    private ArrayList<Integer> spiderLastPath;
     private int strand;
     private int index;
     private int nStrands;
     private int radius;
     private int centerY;
     private int centerX;
-     private Map<Integer, Strand> strandsAndCoordenates;
+    private Map<Integer, Strand> strandsAndCoordenates;
     
     /**
      * Constructor for objects of class Spider
@@ -53,6 +54,7 @@ public class Spider
         index = 1;
         unusedBridges = new HashMap<>();
         spiderpaths = new HashMap<>();
+        spiderLastPath = new ArrayList<>();
         this.nStrands = nStrands;
         this.radius = radius;
         this.centerX = centerX;
@@ -125,6 +127,13 @@ public class Spider
      */
     public void setStrand(int newStrand){
         this.strand = newStrand;
+    }
+    
+    /**
+     * Get the strand in which the spider is
+     */
+    public int getStrand(){
+        return strand;
     }
     
     /**
@@ -268,23 +277,17 @@ public class Spider
             move(bridge.getStartX(),bridge.getStartY());
             createPath(getX(), getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
-            if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb,this);
-            }else if(bridge instanceof Weak){
-                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
-            }
+            bridge.act();
             strand ++;
+            spiderLastPath.add(strand);
         }else if(dir == 2 ){
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
             move(bridge.getStartX(),bridge.getStartY());
-            if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb,this);
-            }else if(bridge instanceof Weak){
-                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
-            }
+            bridge.act();
             strand --;
+            spiderLastPath.add(strand);
         }
     }
     
@@ -299,23 +302,17 @@ public class Spider
             move(bridge.getStartX(),bridge.getStartY());
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
-            if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb,this);
-            }else if(bridge instanceof Weak){
-                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
-            }
+            bridge.act();
             strand = 1;
+            spiderLastPath.add(strand);
         }else if(dir == 2 ){
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
             move(bridge.getStartX(),bridge.getStartY());
-            if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb,this);
-            }else if(bridge instanceof Weak){
-                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
-            }
+            bridge.act();
             strand --;
+            spiderLastPath.add(strand);
         }
     }
     
@@ -348,23 +345,17 @@ public class Spider
             move(bridge.getStartX(),bridge.getStartY());
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
-            if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb,this);
-            }else if(bridge instanceof Weak){
-                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
-            }
+            bridge.act();
             strand ++;
+            spiderLastPath.add(strand);
         }else if(dir == 2 ){
             createPath( getX(),  getY(),bridge.getEndX(),bridge.getEndY());
             move(bridge.getEndX(),bridge.getEndY());
             createPath( getX(),  getY(), bridge.getStartX(), bridge.getStartY());    
             move(bridge.getStartX(),bridge.getStartY());
-            if(bridge instanceof Mobile){
-                ((Mobile)bridge).movilizate(spiderweb,this);
-            }else if(bridge instanceof Weak){
-                ((Weak)bridge).destroy(bridge,bridgesByColor,colorAndStrand);
-            }
+            bridge.act();
             strand = nStrands;
+            spiderLastPath.add(strand);
         }
     }
     
@@ -499,4 +490,17 @@ public class Spider
         }
         return unused;
     }
+    
+    public int getCenterX(){
+        return centerX;
+    }
+    
+    public int getCenterY(){
+        return centerY;
+    }
+    
+    public ArrayList<Integer> lastPath(){
+        return spiderLastPath;
+    }
+    
 }

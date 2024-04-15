@@ -16,16 +16,19 @@ public class Weak extends Bridge{
         super(x1,y1,x2,y2,color,strand,secondStrand,distance);
     }
     
-    /**
-     * Destroy/delete the bridge if the spider cross it 
-     * @param the bridge to destroy
-     * @param Map bridgesByColor and Map colorAndStrand to eliminate from it 
-     */
-    public void destroy(Bridge bridge,Map<String,Bridge>bridgesByColor,Map<String,Integer>colorAndStrand){
-        bridge.makeInvisible();
-        String bridgeColor = bridge.getColor();
-        bridgesByColor.remove(bridgeColor);
-        colorAndStrand.remove(bridgeColor);
-        bridge = null;
+    public spiderWeb getInstanceofSpiderWeb(){
+        return spiderWeb.getInstance();
+    }
+    
+    public void delete(Map<String,Bridge>bridgesByColor,Map<String,Integer>colorAndStrand,Map<String,Bridge>unusedBridges){
+        makeInvisible();
+    }
+    
+    public void act(){
+        spiderWeb spiderweb = getInstanceofSpiderWeb();
+        Map<String,Bridge> bridges = spiderweb.getBridgesByColor();
+        Map<String,Bridge> unused = spiderweb.getUnusedBridges();
+        Map<String,Integer> colorAndStrand = spiderweb.getColorAndStrand();
+        delete(bridges,colorAndStrand,unused);
     }
 }

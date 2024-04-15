@@ -1,4 +1,5 @@
 package spiderweb;
+import java.util.Map;
 
 
 /**
@@ -20,11 +21,21 @@ public class Transformer extends Bridge
         this.color = color;
     }
     
-    /**
-     * Transform to the spot in the same strand if the bridge is delete
-     */
-    public void transform(spiderWeb spiderweb){
-           spiderweb.addSpot(color,strand); 
+    public spiderWeb getInstanceofSpiderWeb(){
+        return spiderWeb.getInstance();
+    }
+    
+    public void delete(Map<String,Bridge>bridgesByColor,Map<String,Integer>colorAndStrand,Map<String,Bridge>unusedBridges){
+        spiderWeb spiderweb = getInstanceofSpiderWeb();
+        makeInvisible();
+        bridgesByColor.remove(color);
+        unusedBridges.remove(color);
+        colorAndStrand.remove(color);
+        spiderweb.addSpot(color,strand);
+    }
+    
+    public void act(){
+        
     }
 }
 

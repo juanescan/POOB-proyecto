@@ -1,4 +1,5 @@
 package spiderweb;
+import java.util.Map;
 
 
 /**
@@ -8,8 +9,6 @@ package spiderweb;
  * @version (a version number or a date)
  */
 public class Mobile extends Bridge{
-
-    
     /**
      * Constructor for objects of class mobile
      */
@@ -30,4 +29,35 @@ public class Mobile extends Bridge{
             spiderweb.relocateBridge(color,distance);
         }
     }
+    
+    public spiderWeb getInstanceofSpiderWeb(){
+        return spiderWeb.getInstance();
+    }
+    
+    public void delete(Map<String,Bridge>bridgesByColor,Map<String,Integer>colorAndStrand,Map<String,Bridge>unusedBridges){
+        makeInvisible();
+        bridgesByColor.remove(color);
+        unusedBridges.remove(color);
+        colorAndStrand.remove(color);
+    }   
+
+    public void act(){
+        spiderWeb spiderweb = getInstanceofSpiderWeb();
+        Spider spider = spiderweb.getSpider();
+        distance = (int)(distance * 1.2);
+        if(spider.spiderInAPosition(x2,y2)){
+            Map<String,Bridge> bridges = spiderweb.getBridgesByColor();
+            Map<String,Bridge> unused = spiderweb.getUnusedBridges();
+            Map<String,Integer> colorAndStrand = spiderweb.getColorAndStrand();
+            delete(bridges,colorAndStrand,unused);
+            spiderweb.addBridge(color,distance,strandBridgeEnd);
+        }else if(spider.spiderInAPosition(x1,y1)){
+            Map<String,Bridge> bridges = spiderweb.getBridgesByColor();
+            Map<String,Bridge> unused = spiderweb.getUnusedBridges();
+            Map<String,Integer> colorAndStrand = spiderweb.getColorAndStrand();
+            delete(bridges,colorAndStrand,unused);
+            spiderweb.addBridge(color,distance,strandBridgeEnd);
+        }
+    }
+    
 }
