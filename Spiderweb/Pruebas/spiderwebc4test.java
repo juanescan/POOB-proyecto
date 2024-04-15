@@ -1,5 +1,5 @@
 package Pruebas;
-
+import spiderweb.*;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,30 +15,16 @@ import org.junit.jupiter.api.Test;
  */
 public class spiderwebc4test
 {
-    /**
-     * Default constructor for test class spiderwebc4test
-     */
-    public spiderwebc4test()
-    {
-    }
-
-    /**
-     * Sets up the test fixture.
-     *
-     * Called before every test case method.
-     */
+   private spiderWeb web;
     @BeforeEach
-    public void setUp()
-    {
-    }
+    public void setUp() {
+        web = spiderWeb.getInstance(5,150);
+    } 
 
-    /**
-     * Tears down the test fixture.
-     *
-     * Called after every test case method.
-     */
-    @AfterEach
-    public void tearDown()
-    {
+   @Test
+    public void testAddBridgeInTheHashMap() {
+        web = spiderWeb.getInstance();
+        web.addBridge("red", 50, 1); 
+        assertNotNull(web.getBridgesByColor().get("red"));
     }
 }
